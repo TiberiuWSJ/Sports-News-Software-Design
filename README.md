@@ -1,23 +1,33 @@
-# Sports News Application
+# **Sports News Application**
 
-As a Software Design project, I'm implementing a capable online news website, focused on sports, like 🥊 MMA, 🏎️ Formula 1, ⚽ Soccer or 🏀 basketball.
+### Introduction
+As part of my Software Design project, I am developing an advanced online news platform dedicated to the passionate world of sports. This website will cover a wide range of sports including 🥊 **MMA**, 🏎️ **Formula 1**, ⚽ **Soccer**, and 🏀 **Basketball**, providing fans with the latest news, updates, and insights.
 
+### **Features**
 
-## Features
+- **User Registration and Interaction**
+  - Users can **sign up** to access personalized features.
+  - Ability to **save stories**, receive notifications via **newsletter**, **share**, and **like** favorite news articles.
 
-- User can sign up to be able to save certain stories, get notified by newsletter, share or like their favourite news.
-- Journalists should be signed up by the site moderator, and he's able to add stories to the website.
-- A capable search bar that anyone can use to find stories by title.
-- Stories can be saved by tags, besides title, body and image, that describe the sport, the sportsman, and what's happened (#LewisHamilton, #ConorMcGregor, #JoshuaVSFury).
-- The User can pick a favourite team, or sportsman to follow, and he can have a certain section in his GUI where only news from that topic are shown. 
+- **Journalist Integration**
+  - Journalists are registered by the site moderator, granting them privileges to **publish stories** to the platform.
 
+- **Advanced Search Functionality**
+  - A robust **search bar** enables users to effortlessly find stories by **title**.
 
-## Tech
+- **Tagging System**
+  - Stories are categorizable by **tags** (e.g., #LewisHamilton, #ConorMcGregor, #JoshuaVSFury), enhancing the discovery of content related to specific sports, athletes, or events.
 
-Dillinger uses a number of open source projects to work properly:
+- **Personalized News Feed**
+  - Users can select their **favorite team or sportsman** to follow, creating a tailored section in their interface that showcases news from those particular interests.
 
-- [Java] - for the backend implementation
-- [SpringBoot] - framework for the project
-- [MySQL] - database handling
+### **Technology Stack**
 
+- **Backend Implementation**: [Java]
+  - Java offers robust and scalable solutions for backend services.
 
+- **Framework**: [Spring Boot]
+  - Spring Boot facilitates rapid development, allowing for the easy setup and creation of applications.
+
+- **Database Handling**: [MySQL]
+  - MySQL serves as the reliable database management system, ensuring efficient data storage and retrieval for the application.
