@@ -28,4 +28,7 @@ public class Tags {
     @OneToMany(mappedBy = "tag", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<StoryTag> stories;
 
+    @OneToMany(mappedBy = "followedTag")
+    private List<LocalUser> followers;
+
 }

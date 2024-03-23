@@ -3,6 +3,7 @@ package com.project.sportsnewsbackend.models;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.catalina.User;
 import org.springframework.cglib.core.Local;
 
 import java.util.Date;
@@ -40,11 +41,16 @@ public class Stories {
 
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "author_id", nullable = false) // Assuming 'author_id' is the column name in the 'stories' table
     private LocalUser author;
 
     @OneToMany(mappedBy = "story", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<StoryTag> tags;
+
+
+    @ManyToOne
+    @JoinColumn(name = "user_id") // This column will store the ID of the user who saved the story
+    private LocalUser user;
 
 
 }

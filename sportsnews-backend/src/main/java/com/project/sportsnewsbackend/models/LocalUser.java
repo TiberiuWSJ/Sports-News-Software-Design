@@ -85,7 +85,21 @@ public class LocalUser {
     public void setFavouriteSportsman(String favouriteSportsman) {
         FavoriteSportsman = favouriteSportsman;
     }
-    
+
     @OneToMany(mappedBy = "author", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<Stories> stories;
+    private List<Stories> authoredStories; // Renamed for clarity
+
+    @ManyToOne
+    @JoinColumn(name = "followed_tag_id")
+    private Tags followedTag;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_saved_stories", // This is a new table for the many-to-many relationship
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "story_id", referencedColumnName = "storyID")}
+    )
+    private List<Stories> savedStories;
+
+
 }
