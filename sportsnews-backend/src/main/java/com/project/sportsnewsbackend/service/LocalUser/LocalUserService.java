@@ -32,6 +32,7 @@ public class LocalUserService {
 
     public void deleteUserById(Long id) {
         localUserRepository.deleteById(id);
+
     }
 
     // More methods can be added as per the business logic requirements.

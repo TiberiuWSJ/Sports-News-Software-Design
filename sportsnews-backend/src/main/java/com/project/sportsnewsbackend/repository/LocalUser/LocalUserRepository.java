@@ -16,4 +16,5 @@ import java.util.function.Function;
 @Repository
 public interface LocalUserRepository extends JpaRepository<LocalUser, Long> {
 
+
 }
