@@ -9,25 +9,46 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller for managing local users within the sports news platform.
+ * Provides endpoints for CRUD operations on {@link LocalUser} entities,
+ * allowing for the retrieval, creation, update, and deletion of users.
+ *
+ * @author Rodanciuc Tiberiu-Gabriel
+ */
 @RestController
 @RequestMapping("/users")
 public class LocalUserController {
 
     private final LocalUserService localUserService;
 
+    /**
+     * Constructs the {@link LocalUserController} with the required {@link LocalUserService}.
+     *
+     * @param localUserService The service used for user operations.
+     */
     @Autowired
     public LocalUserController(LocalUserService localUserService) {
         this.localUserService = localUserService;
     }
 
-    // GET endpoint to retrieve all users
+    /**
+     * Retrieves all users.
+     *
+     * @return A {@link ResponseEntity} containing a list of {@link LocalUser} entities and the HTTP status.
+     */
     @GetMapping
     public ResponseEntity<List<LocalUser>> getAllUsers() {
         List<LocalUser> users = localUserService.findAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    // GET endpoint to retrieve a single user by ID
+    /**
+     * Retrieves a single user by their ID.
+     *
+     * @param id The ID of the user to retrieve.
+     * @return A {@link ResponseEntity} containing the found {@link LocalUser} or a NOT_FOUND status.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<LocalUser> getUserById(@PathVariable Long id) {
         return localUserService.findUserById(id)
@@ -35,14 +56,25 @@ public class LocalUserController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    // POST endpoint to create a new user
+    /**
+     * Creates a new user.
+     *
+     * @param user The {@link LocalUser} entity to create.
+     * @return A {@link ResponseEntity} containing the created user and the HTTP status.
+     */
     @PostMapping
     public ResponseEntity<LocalUser> createUser(@RequestBody LocalUser user) {
         LocalUser newUser = localUserService.saveUser(user);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
-    // PUT endpoint to update an existing user
+    /**
+     * Updates an existing user identified by their ID with new details.
+     *
+     * @param id The ID of the user to update.
+     * @param userDetails The new details for the user.
+     * @return A {@link ResponseEntity} containing the updated user or a NOT_FOUND status.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<LocalUser> updateUser(@PathVariable Long id, @RequestBody LocalUser userDetails) {
         return localUserService.findUserById(id)
@@ -55,18 +87,21 @@ public class LocalUserController {
                     user.setIsModerator(userDetails.getIsModerator());
                     user.setFavoriteTeam(userDetails.getFavoriteTeam());
                     user.setFavoriteSportsman(userDetails.getFavoriteSportsman());
-                    // If there are any other fields that need to be updated, include them here
+                    // Include other fields as necessary
 
-                    // After setting all the fields, save the updated user
+                    // Save and return the updated user
                     LocalUser updatedUser = localUserService.saveUser(user);
-
-                    // Return the updated user
                     return new ResponseEntity<>(updatedUser, HttpStatus.OK);
                 })
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    // DELETE endpoint to delete a user
+    /**
+     * Deletes a user by their ID.
+     *
+     * @param id The ID of the user to delete.
+     * @return A {@link ResponseEntity} indicating the result of the deletion operation.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) {
         try {
