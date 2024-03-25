@@ -31,3 +31,6 @@ As part of my Software Design project, I am developing an advanced online news p
 
 - **Database Handling**: [MySQL]
   - MySQL serves as the reliable database management system, ensuring efficient data storage and retrieval for the application.
+
+### **Database Diagram**
+![Database Diagram](database_Diagram_2.png)
