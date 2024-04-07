@@ -1,5 +1,7 @@
 package com.project.sportsnewsbackend.models;
 
+import com.project.sportsnewsbackend.ObserverDP.Observer;
+import com.project.sportsnewsbackend.ObserverDP.Subject;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +9,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -24,7 +28,9 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "stories")
-public class Stories {
+public class Stories  {
+
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,18 +66,26 @@ public class Stories {
      * The author of the story, represented by a {@link LocalUser}.
      * Each story must have an author, establishing accountability and origin.
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", nullable = false)
     @JsonIgnore
     private LocalUser author;
 
-    /**
-     * A list of tags ({@link StoryTag}) associated with the story,
-     * allowing for categorization and easier discovery of related content.
-     */
-    @OneToMany(mappedBy = "story", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "story", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<StoryTag> tags;
+
+    public void removeTagsFromStory() {
+        // Create an iterator for the tags list
+        Iterator<StoryTag> iterator = tags.iterator();
+        // Iterate through the list of tags
+        while (iterator.hasNext()) {
+            // Get the next StoryTag
+            StoryTag storyTag = iterator.next();
+            // Remove the current StoryTag from the list
+            iterator.remove();
+        }
+    }
 
     /**
      * A reference to a user who has saved this story for later reading.
@@ -81,4 +95,5 @@ public class Stories {
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private LocalUser user;
+
 }

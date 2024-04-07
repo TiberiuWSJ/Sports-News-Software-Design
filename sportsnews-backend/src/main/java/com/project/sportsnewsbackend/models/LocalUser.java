@@ -63,28 +63,19 @@ public class LocalUser {
     /**
      * Stories authored by the user, highlighting their contributions as a journalist.
      */
-    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Stories> authoredStories;
 
-    /**
-     * The single tag followed by the user, reflecting their primary interest within the sports domain.
-     */
     @ManyToOne
-    @JoinColumn(name = "followed_tag_id")
-
+    @JoinColumn(name = "followed_tag_id") // This column links to the Tags entity
     private Tags followedTag;
 
-    /**
-     * Stories saved by the user for later reading, indicating their interests and preferences.
-     */
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(
             name = "user_saved_stories",
-            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "story_id", referencedColumnName = "storyID")}
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "story_id")
     )
-
     private List<Stories> savedStories;
 
 }

@@ -72,5 +72,14 @@ public class LocalUserService {
         localUserRepository.deleteById(id);
     }
 
+    public void notifyUser(Long userId, String message) {
+        // Logic to send a notification to the user.
+        // This could be an email, a WebSocket message, or any other form of user notification.
+        System.out.println("Notifying user " + userId + ": " + message);
+
+        // Here you can integrate with your notification mechanism.
+        // For example, if you have an EmailService, you could call emailService.sendNotificationEmail(userId, message);
+    }
+
     // More methods can be added as per the business logic requirements.
 }

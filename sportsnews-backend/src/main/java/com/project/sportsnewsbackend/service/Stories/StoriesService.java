@@ -11,6 +11,8 @@ import com.project.sportsnewsbackend.repository.Stories.StoriesRepository;
 import com.project.sportsnewsbackend.repository.StoryTag.StoryTagRepository;
 import com.project.sportsnewsbackend.repository.Tags.TagsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
+@Component
 public class StoriesService {
 
     private final StoriesRepository storiesRepository;
@@ -93,21 +97,28 @@ public class StoriesService {
                     StoryTag storyTag = new StoryTag();
                     storyTag.setStory(story);
                     storyTag.setTag(tag);
-                    return storyTagRepository.save(storyTag);
+                    return storyTag;
                 })
-                .toList();
+                .collect(Collectors.toList());
 
-        story.setTags(new ArrayList<>(storyTags));
+        story.setTags(storyTags);
     }
 
-    private void clearAndAttachTagsToStory(Stories story, List<Tags> tags) {
-        // Remove existing tags
-        storyTagRepository.deleteAll(story.getTags());
+
+    private void clearAndAttachTagsToStory(Stories story, List<Tags> newTags) {
+        // First, clear the existing tags to remove them
         story.getTags().clear();
 
-        // Attach new tags
-        attachTagsToStory(story, tags);
+        // Then, add the new tags
+        for (Tags tag : newTags) {
+            StoryTag storyTag = new StoryTag();  // Create a new StoryTag instance
+            storyTag.setStory(story);  // Set the story for the StoryTag
+            storyTag.setTag(tag);  // Set the tag for the StoryTag
+            story.getTags().add(storyTag);  // Add the StoryTag to the story's tags
+        }
     }
+
+
 
     public List<Stories> getAllStories() {
         return storiesRepository.findAll();
@@ -124,11 +135,16 @@ public class StoriesService {
      *
      * @param id The ID of the story to delete.
      */
-    public void deleteStory(Long id) {
-        Stories story = storiesRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Story not found for this id :: " + id));
-        storiesRepository.delete(story);
+
+    public void deleteStory(Long id) throws Exception {
+        Stories story = storiesRepository.findById(id).orElse(null);
+        if (story != null) {
+            storyTagRepository.deleteAllByStoryId(id);
+            storiesRepository.delete(story);
+        }else{
+            throw new Exception("Something hasn't gone well!");
+        }
     }
 
-    // Additional methods as per business logic can be added here.
+
 }

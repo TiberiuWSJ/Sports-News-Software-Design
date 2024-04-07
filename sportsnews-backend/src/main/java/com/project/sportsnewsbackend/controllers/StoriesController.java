@@ -4,6 +4,7 @@ import com.project.sportsnewsbackend.DTO.StoryCreationDTO;
 import com.project.sportsnewsbackend.DTO.StoryUpdateDTO;
 import com.project.sportsnewsbackend.models.Stories;
 import com.project.sportsnewsbackend.service.Stories.StoriesService;
+import com.project.sportsnewsbackend.service.StoryNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,7 @@ public class StoriesController {
     @PostMapping
     public ResponseEntity<Stories> createStory(@RequestBody StoryCreationDTO storyDTO) {
         Stories newStory = storiesService.addStory(storyDTO);
+        notificationService.notifyObservers(newStory.getStoryID());
         return new ResponseEntity<>(newStory, HttpStatus.CREATED);
     }
 
@@ -45,19 +47,24 @@ public class StoriesController {
     public ResponseEntity<Stories> updateStory(@PathVariable Long id, @RequestBody StoryUpdateDTO storyDTO) {
         try {
             Stories updatedStory = storiesService.updateStory(id, storyDTO);
+            System.out.println(updatedStory);
             return new ResponseEntity<>(updatedStory, HttpStatus.OK);
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteStory(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteStory(@PathVariable Long id) throws Exception {
         try {
             storiesService.deleteStory(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new Exception("Story not found with ID: " + id + e.getMessage());
         }
     }
+
+    @Autowired
+    private StoryNotificationService notificationService;
 }
