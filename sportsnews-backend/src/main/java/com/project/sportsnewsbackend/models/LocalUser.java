@@ -1,5 +1,6 @@
 package com.project.sportsnewsbackend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -63,6 +64,7 @@ public class LocalUser {
      * Stories authored by the user, highlighting their contributions as a journalist.
      */
     @OneToMany(mappedBy = "author", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+
     private List<Stories> authoredStories;
 
     /**
@@ -70,6 +72,7 @@ public class LocalUser {
      */
     @ManyToOne
     @JoinColumn(name = "followed_tag_id")
+
     private Tags followedTag;
 
     /**
@@ -81,6 +84,7 @@ public class LocalUser {
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "story_id", referencedColumnName = "storyID")}
     )
+
     private List<Stories> savedStories;
 
 }

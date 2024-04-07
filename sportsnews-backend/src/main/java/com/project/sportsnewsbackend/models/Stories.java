@@ -3,6 +3,7 @@ package com.project.sportsnewsbackend.models;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -61,6 +62,7 @@ public class Stories {
      */
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
+    @JsonIgnore
     private LocalUser author;
 
     /**
@@ -68,6 +70,7 @@ public class Stories {
      * allowing for categorization and easier discovery of related content.
      */
     @OneToMany(mappedBy = "story", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<StoryTag> tags;
 
     /**
@@ -76,5 +79,6 @@ public class Stories {
      */
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private LocalUser user;
 }

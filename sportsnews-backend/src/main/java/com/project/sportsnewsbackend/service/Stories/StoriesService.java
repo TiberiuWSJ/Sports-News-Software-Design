@@ -1,77 +1,123 @@
 package com.project.sportsnewsbackend.service.Stories;
 
+import com.project.sportsnewsbackend.DTO.StoryCreationDTO;
+import com.project.sportsnewsbackend.DTO.StoryUpdateDTO;
+import com.project.sportsnewsbackend.models.LocalUser;
 import com.project.sportsnewsbackend.models.Stories;
+import com.project.sportsnewsbackend.models.StoryTag;
+import com.project.sportsnewsbackend.models.Tags;
+import com.project.sportsnewsbackend.repository.LocalUser.LocalUserRepository;
 import com.project.sportsnewsbackend.repository.Stories.StoriesRepository;
+import com.project.sportsnewsbackend.repository.StoryTag.StoryTagRepository;
+import com.project.sportsnewsbackend.repository.Tags.TagsRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-/**
- * Service class for managing stories within the sports news platform.
- * Provides methods for CRUD operations on stories, utilizing the {@link StoriesRepository}.
- * This class acts as a bridge between the controller layer and the repository, ensuring
- * that business logic and data access are properly separated.
- *
- * @author Rodanciuc Tiberiu-Gabriel
- */
 @Service
 public class StoriesService {
 
     private final StoriesRepository storiesRepository;
+    private final TagsRepository tagsRepository;
+    private final LocalUserRepository localUserRepository;
+    private final StoryTagRepository storyTagRepository;
 
-    /**
-     * Constructs a StoriesService with the necessary {@link StoriesRepository}.
-     *
-     * @param storiesRepository The repository used for story operations.
-     */
-    public StoriesService(StoriesRepository storiesRepository) {
+    @Autowired
+    public StoriesService(StoriesRepository storiesRepository, TagsRepository tagsRepository,
+                          LocalUserRepository localUserRepository, StoryTagRepository storyTagRepository) {
         this.storiesRepository = storiesRepository;
+        this.tagsRepository = tagsRepository;
+        this.localUserRepository = localUserRepository;
+        this.storyTagRepository = storyTagRepository;
     }
 
-    /**
-     * Adds a new story to the database.
-     *
-     * @param story The {@link Stories} entity to add.
-     * @return The saved {@link Stories} entity.
-     */
-    public Stories addStory(Stories story) {
+    @Transactional
+    public Stories addStory(StoryCreationDTO storyDTO) {
+        LocalUser author = localUserRepository.findById(storyDTO.getAuthorId())
+                .orElseThrow(() -> new RuntimeException("Author not found with ID: " + storyDTO.getAuthorId()));
+
+        Stories story = new Stories();
+        story.setTitle(storyDTO.getTitle());
+        story.setBody(storyDTO.getBody());
+        story.setImageURL(storyDTO.getImageURL());
+        story.setPublishedDate(storyDTO.getPublishedDate());
+        story.setAuthor(author);
+
+        Stories savedStory = storiesRepository.save(story); // Save to generate the ID
+
+        List<Tags> tags = storyDTO.getTagNames().stream()
+                .map(this::createOrGetTag)
+                .collect(Collectors.toList());
+
+        attachTagsToStory(savedStory, tags);
+
+        return savedStory;
+    }
+
+    @Transactional
+    public Stories updateStory(Long id, StoryUpdateDTO storyDTO) {
+        Stories story = storiesRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Story not found with ID: " + id));
+
+        story.setTitle(storyDTO.getTitle());
+        story.setBody(storyDTO.getBody());
+        story.setImageURL(storyDTO.getImageURL());
+        story.setPublishedDate(storyDTO.getPublishedDate());
+
+        List<Tags> tags = storyDTO.getTagNames().stream()
+                .map(this::createOrGetTag)
+                .collect(Collectors.toList());
+
+        clearAndAttachTagsToStory(story, tags);
+
         return storiesRepository.save(story);
     }
 
-    /**
-     * Retrieves all stories from the database.
-     *
-     * @return A list of {@link Stories} entities.
-     */
+    private Tags createOrGetTag(String tagName) {
+        return tagsRepository.findByName(tagName)
+                .orElseGet(() -> {
+                    Tags tag = new Tags();
+                    tag.setName(tagName);
+                    return tagsRepository.save(tag);
+                });
+    }
+
+    private void attachTagsToStory(Stories story, List<Tags> tags) {
+        List<StoryTag> storyTags = tags.stream()
+                .map(tag -> {
+                    StoryTag storyTag = new StoryTag();
+                    storyTag.setStory(story);
+                    storyTag.setTag(tag);
+                    return storyTagRepository.save(storyTag);
+                })
+                .toList();
+
+        story.setTags(new ArrayList<>(storyTags));
+    }
+
+    private void clearAndAttachTagsToStory(Stories story, List<Tags> tags) {
+        // Remove existing tags
+        storyTagRepository.deleteAll(story.getTags());
+        story.getTags().clear();
+
+        // Attach new tags
+        attachTagsToStory(story, tags);
+    }
+
     public List<Stories> getAllStories() {
         return storiesRepository.findAll();
     }
 
-    /**
-     * Fetches a single story by its ID.
-     *
-     * @param id The ID of the story to retrieve.
-     * @return An {@link Optional} containing the found story or empty if not found.
-     */
+
     public Optional<Stories> getStoryById(Long id) {
         return storiesRepository.findById(id);
     }
 
-    /**
-     * Updates an existing story with new details. If the story with the specified ID
-     * does not exist, a {@link RuntimeException} is thrown.
-     *
-     * @param id The ID of the story to update.
-     * @param storyDetails The new details for the story.
-     * @return The updated {@link Stories} entity.
-     */
-    public Stories updateStory(Long id, Stories storyDetails) {
-        Stories story = storiesRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Story not found for this id :: " + id));
-        // Update logic
-        return storiesRepository.save(story);
-    }
 
     /**
      * Deletes a story by its ID. If the story is not found, a {@link RuntimeException} is thrown.

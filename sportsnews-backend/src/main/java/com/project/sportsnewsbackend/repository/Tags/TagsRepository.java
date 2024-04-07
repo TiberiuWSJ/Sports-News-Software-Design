@@ -4,6 +4,8 @@ import com.project.sportsnewsbackend.models.Tags;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * Repository interface for {@link Tags} entities. Extends {@link JpaRepository} to provide
  * standard CRUD operations for {@link Tags} entities within the sports news platform's database.
@@ -19,5 +21,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface TagsRepository extends JpaRepository<Tags, Long> {
-    // Potential place for custom query methods
+    Optional<Tags> findByName(String name);
 }
