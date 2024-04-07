@@ -73,17 +73,6 @@ public class Stories  {
     @JsonIgnore
     private List<StoryTag> tags;
 
-    public void removeTagsFromStory() {
-        // Create an iterator for the tags list
-        Iterator<StoryTag> iterator = tags.iterator();
-        // Iterate through the list of tags
-        while (iterator.hasNext()) {
-            // Get the next StoryTag
-            StoryTag storyTag = iterator.next();
-            // Remove the current StoryTag from the list
-            iterator.remove();
-        }
-    }
 
     /**
      * A reference to a user who has saved this story for later reading.

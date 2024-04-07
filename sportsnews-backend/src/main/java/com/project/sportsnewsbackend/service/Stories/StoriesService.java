@@ -22,6 +22,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
+/**
+ * Service for managing stories within the sports news platform.
+ * Provides functionality to create, update, delete, and retrieve stories,
+ * along with managing their associated tags and author information.
+ */
 @Service
 @Transactional
 @Component
@@ -41,6 +47,13 @@ public class StoriesService {
         this.storyTagRepository = storyTagRepository;
     }
 
+    /**
+     * Adds a new story based on provided information in the StoryCreationDTO.
+     * Notifies followers of the story's tags upon successful creation.
+     *
+     * @param storyDTO The DTO containing the new story's information.
+     * @return The newly created story entity.
+     */
     @Transactional
     public Stories addStory(StoryCreationDTO storyDTO) {
         LocalUser author = localUserRepository.findById(storyDTO.getAuthorId())
@@ -66,6 +79,13 @@ public class StoriesService {
         return savedStory;
     }
 
+    /**
+     * Updates an existing story's information with the details provided in the StoryUpdateDTO.
+     *
+     * @param id The ID of the story to update.
+     * @param storyDTO The DTO containing the updated story information.
+     * @return The updated story entity.
+     */
     @Transactional
     public Stories updateStory(Long id, StoryUpdateDTO storyDTO) {
         Stories story = storiesRepository.findById(id)
@@ -122,12 +142,22 @@ public class StoriesService {
     }
 
 
-
+    /**
+     * Retrieves all existing stories.
+     *
+     * @return A list of all story entities.
+     */
     public List<Stories> getAllStories() {
         return storiesRepository.findAll();
     }
 
 
+    /**
+     * Retrieves a specific story by its ID.
+     *
+     * @param id The ID of the story to retrieve.
+     * @return An Optional containing the found story, if available.
+     */
     public Optional<Stories> getStoryById(Long id) {
         return storiesRepository.findById(id);
     }
@@ -138,7 +168,6 @@ public class StoriesService {
      *
      * @param id The ID of the story to delete.
      */
-
     public void deleteStory(Long id) throws Exception {
         Stories story = storiesRepository.findById(id).orElse(null);
         if (story != null) {
