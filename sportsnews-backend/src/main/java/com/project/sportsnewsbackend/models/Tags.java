@@ -49,4 +49,6 @@ public class Tags {
      */
     @OneToMany(mappedBy = "followedTag")
     private List<LocalUser> followers;
+
+
 }

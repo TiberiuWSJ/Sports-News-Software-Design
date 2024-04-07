@@ -1,7 +1,9 @@
 package com.project.sportsnewsbackend.service.LocalUser;
 
 import com.project.sportsnewsbackend.models.LocalUser;
+import com.project.sportsnewsbackend.models.Tags;
 import com.project.sportsnewsbackend.repository.LocalUser.LocalUserRepository;
+import com.project.sportsnewsbackend.repository.Tags.TagsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,15 +24,18 @@ import java.util.Optional;
 public class LocalUserService {
 
     private final LocalUserRepository localUserRepository;
+    private final TagsRepository tagsRepository;
 
     /**
      * Constructs a new LocalUserService with the given {@link LocalUserRepository}.
      *
      * @param localUserRepository the repository used for user operations.
+     * @param tagsRepository
      */
     @Autowired
-    public LocalUserService(LocalUserRepository localUserRepository) {
+    public LocalUserService(LocalUserRepository localUserRepository, TagsRepository tagsRepository) {
         this.localUserRepository = localUserRepository;
+        this.tagsRepository = tagsRepository;
     }
 
     /**
@@ -72,13 +77,19 @@ public class LocalUserService {
         localUserRepository.deleteById(id);
     }
 
-    public void notifyUser(Long userId, String message) {
-        // Logic to send a notification to the user.
-        // This could be an email, a WebSocket message, or any other form of user notification.
-        System.out.println("Notifying user " + userId + ": " + message);
+    public Optional<LocalUser> setUserFavoriteTag(Long userId, Long tagId) {
+        Optional<LocalUser> userOpt = localUserRepository.findById(userId);
+        Optional<Tags> tagOpt = tagsRepository.findById(tagId);
 
-        // Here you can integrate with your notification mechanism.
-        // For example, if you have an EmailService, you could call emailService.sendNotificationEmail(userId, message);
+        if (userOpt.isPresent() && tagOpt.isPresent()) {
+            LocalUser user = userOpt.get();
+            Tags tag = tagOpt.get();
+
+            user.setFollowedTag(tag);
+            localUserRepository.save(user);
+            return Optional.of(user);
+        }
+        return Optional.empty();
     }
 
     // More methods can be added as per the business logic requirements.

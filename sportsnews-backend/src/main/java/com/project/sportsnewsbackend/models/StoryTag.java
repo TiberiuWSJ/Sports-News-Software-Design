@@ -32,6 +32,7 @@ public class StoryTag {
     @Id
     @ManyToOne
     @JoinColumn(name = "story_id", referencedColumnName = "StoryID")
+    @Getter
     private Stories story;
 
     /**
@@ -40,6 +41,7 @@ public class StoryTag {
      */
     @Id
     @ManyToOne
+    @Setter
     @JoinColumn(name = "tag_id", referencedColumnName = "TagID")
     private Tags tag;
 }

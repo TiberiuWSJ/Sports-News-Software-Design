@@ -97,6 +97,20 @@ public class LocalUserController {
     }
 
     /**
+     * Updates the user's favorite tag.
+     *
+     * @param userId The ID of the user.
+     * @param tagId The ID of the tag to set as favorite.
+     * @return A {@link ResponseEntity} containing the updated user or a NOT_FOUND status.
+     */
+    @PutMapping("/{userId}/favoriteTag/{tagId}")
+    public ResponseEntity<LocalUser> updateUserFavoriteTag(@PathVariable Long userId, @PathVariable Long tagId) {
+        return localUserService.setUserFavoriteTag(userId, tagId)
+                .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    /**
      * Deletes a user by their ID.
      *
      * @param id The ID of the user to delete.

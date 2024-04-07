@@ -1,7 +1,5 @@
 package com.project.sportsnewsbackend.models;
 
-import com.project.sportsnewsbackend.ObserverDP.Observer;
-import com.project.sportsnewsbackend.ObserverDP.Subject;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

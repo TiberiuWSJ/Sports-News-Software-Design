@@ -10,6 +10,7 @@ import com.project.sportsnewsbackend.repository.LocalUser.LocalUserRepository;
 import com.project.sportsnewsbackend.repository.Stories.StoriesRepository;
 import com.project.sportsnewsbackend.repository.StoryTag.StoryTagRepository;
 import com.project.sportsnewsbackend.repository.Tags.TagsRepository;
+import com.project.sportsnewsbackend.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
@@ -59,6 +60,8 @@ public class StoriesService {
                 .collect(Collectors.toList());
 
         attachTagsToStory(savedStory, tags);
+        tags.forEach(tag -> notificationService.notifyFollowersOfTag(tag.getTagID(), savedStory));
+
 
         return savedStory;
     }
@@ -145,6 +148,10 @@ public class StoriesService {
             throw new Exception("Something hasn't gone well!");
         }
     }
+
+    @Autowired
+    private NotificationService notificationService;
+
 
 
 }
