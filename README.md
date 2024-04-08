@@ -44,7 +44,7 @@ The database schema is designed to support complex relationships:
 - **Tags** categorize stories for efficient discovery.
 
 ### Database Diagram 
-[Database Diagram]("database_Diagram_2.png")
+![Alt Database Diagram](database_Diagram_2.png)
 
 ### Notification System
 A custom notification service leverages Spring's event-driven capabilities to alert users of new stories in their areas of interest, enhancing user engagement.
