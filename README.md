@@ -37,6 +37,64 @@ Users can tailor their news feed by following favorite teams or athletes, creati
 ### RESTful API Design
 The backend is structured around a RESTful architecture, offering a set of well-defined APIs for frontend interaction, story submission, user management, and more, ensuring a decoupled, scalable application structure.
 
+##### Get All Users
+- **GET** `/users`
+  - Retrieves a list of all users.
+
+##### Get User by ID
+- **GET** `/users/{id}`
+  - Retrieves a single user by their ID.
+  - Path Variable: `id` - The ID of the user.
+
+##### Create User
+- **POST** `/users`
+  - Creates a new user.
+  - Request Body: JSON representation of `LocalUser`.
+
+##### Update User
+- **PUT** `/users/{id}`
+  - Updates an existing user by their ID.
+  - Path Variable: `id` - The ID of the user to update.
+  - Request Body: JSON representation of `LocalUser` with updated fields.
+
+##### Update User's Favorite Tag
+- **PUT** `/users/{userId}/favoriteTag/{tagId}`
+  - Updates the user's favorite tag.
+  - Path Variables:
+    - `userId` - The ID of the user.
+    - `tagId` - The ID of the tag to set as favorite.
+
+##### Delete User
+- **DELETE** `/users/{id}`
+  - Deletes a user by their ID.
+  - Path Variable: `id` - The ID of the user to delete.
+
+##### Get All Stories
+- **GET** `/stories`
+  - Retrieves a list of all stories.
+
+##### Get Story by ID
+- **GET** `/stories/{id}`
+  - Retrieves a single story by its ID.
+  - Path Variable: `id` - The ID of the story.
+
+##### Create Story
+- **POST** `/stories`
+  - Creates a new story.
+  - Request Body: JSON representation of `StoryCreationDTO`.
+
+##### Update Story
+- **PUT** `/stories/{id}`
+  - Updates an existing story by its ID.
+  - Path Variable: `id` - The ID of the story to update.
+  - Request Body: JSON representation of `StoryUpdateDTO`.
+
+##### Delete Story
+- **DELETE** `/stories/{id}`
+  - Deletes a story by its ID.
+  - Path Variable: `id` - The ID of the story to delete.
+
+
 ### Entity-Relationship Model
 The database schema is designed to support complex relationships:
 - **Users** have roles, preferences, and can save or like multiple stories.
