@@ -10,14 +10,12 @@ import com.project.sportsnewsbackend.repository.LocalUser.LocalUserRepository;
 import com.project.sportsnewsbackend.repository.Stories.StoriesRepository;
 import com.project.sportsnewsbackend.repository.StoryTag.StoryTagRepository;
 import com.project.sportsnewsbackend.repository.Tags.TagsRepository;
-import com.project.sportsnewsbackend.service.NotificationService;
+import com.project.sportsnewsbackend.service.Notification.NotificationServiceHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -73,7 +71,7 @@ public class StoriesService {
                 .collect(Collectors.toList());
 
         attachTagsToStory(savedStory, tags);
-        tags.forEach(tag -> notificationService.notifyFollowersOfTag(tag.getTagID(), savedStory));
+        tags.forEach(tag -> notificationServiceHelper.notifyFollowersOfTag(tag.getTagID(), savedStory)); //for the observer dp
 
 
         return savedStory;
@@ -179,7 +177,7 @@ public class StoriesService {
     }
 
     @Autowired
-    private NotificationService notificationService;
+    private NotificationServiceHelper notificationServiceHelper;
 
 
 

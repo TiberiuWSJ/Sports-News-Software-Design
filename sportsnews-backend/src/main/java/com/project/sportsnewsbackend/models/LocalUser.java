@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -82,4 +83,7 @@ public class LocalUser {
             inverseJoinColumns = @JoinColumn(name = "story_id")
     )
     private List<Stories> savedStories;
+
+    @OneToMany(mappedBy = "localUser", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Notification> notifications = new ArrayList<>();
 }

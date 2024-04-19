@@ -1,8 +1,10 @@
-package com.project.sportsnewsbackend.service;
+package com.project.sportsnewsbackend.service.Notification;
 
 import com.project.sportsnewsbackend.models.LocalUser;
+import com.project.sportsnewsbackend.models.Notification;
 import com.project.sportsnewsbackend.models.Stories;
 import com.project.sportsnewsbackend.repository.LocalUser.LocalUserRepository;
+import com.project.sportsnewsbackend.repository.Notification.NotificationRepository;
 import com.project.sportsnewsbackend.repository.Tags.TagsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,21 +16,24 @@ import java.util.List;
  * This service focuses on notifying users who follow specific tags whenever a new story tagged with those tags is published.
  */
 @Service
-public class NotificationService {
+public class NotificationServiceHelper {
 
     private final LocalUserRepository localUserRepository;
     private final TagsRepository tagsRepository;
+    private final NotificationRepository notificationRepository;
 
     /**
-     * Constructs a NotificationService with necessary dependencies.
+     * Constructs a NotificationServiceHelper with necessary dependencies.
      *
-     * @param localUserRepository Repository for accessing {@link LocalUser} entities.
-     * @param tagsRepository Repository for accessing {@link Tags} entities.
+     * @param localUserRepository    Repository for accessing {@link LocalUser} entities.
+     * @param tagsRepository         Repository for accessing {@link Tags} entities.
+     * @param notificationRepository Repository for accessing {@link Notification} entities;
      */
     @Autowired
-    public NotificationService(LocalUserRepository localUserRepository, TagsRepository tagsRepository) {
+    public NotificationServiceHelper(LocalUserRepository localUserRepository, TagsRepository tagsRepository, NotificationRepository notificationRepository) {
         this.localUserRepository = localUserRepository;
         this.tagsRepository = tagsRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     /**
@@ -66,5 +71,11 @@ public class NotificationService {
         // Implement your notification logic here
         // For example, send an email to the user with the new story details
         System.out.println("Notifying " + user.getEmail() + " about new story: " + story.getTitle());
+        Notification notification = new Notification();
+        notification.setLocalUser(user);
+        notification.setRelatedStory(story);
+        notification.setContent("A new story has been posted on one of the tags you've followed: " + story.getTitle());
+        notificationRepository.save(notification);
+
     }
 }
