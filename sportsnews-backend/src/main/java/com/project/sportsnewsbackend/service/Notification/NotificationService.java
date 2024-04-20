@@ -12,9 +12,17 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+
+/**
+ * Service responsible for sending notifications to users about new stories related to their interests.
+ * This service focuses on notifying users who follow specific tags whenever a new story tagged with those tags is published.
+ */
 @Service
 public class NotificationService {
 
+    /**
+     * The repository for managing notifications.
+     */
     private final NotificationRepository notificationRepository;
     private final LocalUserRepository localUserRepository;
 
@@ -49,11 +57,6 @@ public class NotificationService {
     public List<Notification> getNotificationsForUser(Long userId) {
         // This method assumes you have a custom query defined in NotificationRepository
         // to fetch notifications by user ID
-        LocalUser author = localUserRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Author not found with ID: " + userId));
-
-
-
         return notificationRepository.findByLocalUserId(userId);
     }
 }

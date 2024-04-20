@@ -67,9 +67,13 @@ public class NotificationServiceHelper {
      * @param user The {@link LocalUser} to whom the notification will be sent.
      * @param story The {@link Stories} entity about which the user is being notified.
      */
-    private void sendNotification(LocalUser user, Stories story) {
+    public void sendNotification(LocalUser user, Stories story) {
         // Implement your notification logic here
         // For example, send an email to the user with the new story details
+        //check user null
+        if(user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
         System.out.println("Notifying " + user.getEmail() + " about new story: " + story.getTitle());
         Notification notification = new Notification();
         notification.setLocalUser(user);

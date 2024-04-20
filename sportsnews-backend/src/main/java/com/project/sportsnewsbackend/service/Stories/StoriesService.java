@@ -11,6 +11,7 @@ import com.project.sportsnewsbackend.repository.Stories.StoriesRepository;
 import com.project.sportsnewsbackend.repository.StoryTag.StoryTagRepository;
 import com.project.sportsnewsbackend.repository.Tags.TagsRepository;
 import com.project.sportsnewsbackend.service.Notification.NotificationServiceHelper;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -35,14 +36,18 @@ public class StoriesService {
     private final TagsRepository tagsRepository;
     private final LocalUserRepository localUserRepository;
     private final StoryTagRepository storyTagRepository;
+    @Autowired
+    private NotificationServiceHelper notificationServiceHelper;
 
     @Autowired
     public StoriesService(StoriesRepository storiesRepository, TagsRepository tagsRepository,
-                          LocalUserRepository localUserRepository, StoryTagRepository storyTagRepository) {
+                          LocalUserRepository localUserRepository, StoryTagRepository storyTagRepository,
+                            NotificationServiceHelper notificationServiceHelper){
         this.storiesRepository = storiesRepository;
         this.tagsRepository = tagsRepository;
         this.localUserRepository = localUserRepository;
         this.storyTagRepository = storyTagRepository;
+        this.notificationServiceHelper = notificationServiceHelper;
     }
 
     /**
@@ -70,8 +75,15 @@ public class StoriesService {
                 .map(this::createOrGetTag)
                 .collect(Collectors.toList());
 
-        attachTagsToStory(savedStory, tags);
-        tags.forEach(tag -> notificationServiceHelper.notifyFollowersOfTag(tag.getTagID(), savedStory)); //for the observer dp
+        if (!tags.isEmpty()) {
+            if (notificationServiceHelper == null) {
+                System.out.println("NotificationServiceHelper is null");
+            } else {
+                attachTagsToStory(savedStory, tags);
+                tags.forEach(tag -> notificationServiceHelper.notifyFollowersOfTag(tag.getTagID(), savedStory));
+            }
+        }
+
 
 
         return savedStory;
@@ -176,8 +188,7 @@ public class StoriesService {
         }
     }
 
-    @Autowired
-    private NotificationServiceHelper notificationServiceHelper;
+
 
 
 

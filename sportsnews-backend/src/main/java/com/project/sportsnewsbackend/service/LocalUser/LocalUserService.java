@@ -74,23 +74,33 @@ public class LocalUserService {
      * @param id the ID of the user to delete.
      */
     public void deleteUserById(Long id) {
+        // Check if the user exists before deleting
+        if (!localUserRepository.existsById(id)) {
+            throw new IllegalArgumentException("User not found with ID: " + id);
+        }
         localUserRepository.deleteById(id);
     }
 
     public Optional<LocalUser> setUserFavoriteTag(Long userId, Long tagId) {
+        // First, try to find the user
         Optional<LocalUser> userOpt = localUserRepository.findById(userId);
-        Optional<Tags> tagOpt = tagsRepository.findById(tagId);
+        if (userOpt.isPresent()) {
+            // Only if the user is found, then look for the tag
+            Optional<Tags> tagOpt = tagsRepository.findById(tagId);
+            if (tagOpt.isPresent()) {
+                LocalUser user = userOpt.get();
+                Tags tag = tagOpt.get();
 
-        if (userOpt.isPresent() && tagOpt.isPresent()) {
-            LocalUser user = userOpt.get();
-            Tags tag = tagOpt.get();
-
-            user.setFollowedTag(tag);
-            localUserRepository.save(user);
-            return Optional.of(user);
+                // Set the tag to the user and save
+                user.setFollowedTag(tag);
+                localUserRepository.save(user);
+                return Optional.of(user);
+            }
         }
+        // If the user isn't found, or the tag isn't found, return empty
         return Optional.empty();
     }
+
 
     // More methods can be added as per the business logic requirements.
 }
