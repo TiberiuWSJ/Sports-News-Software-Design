@@ -15,12 +15,16 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+/**
+ * Tests for {@link NotificationServiceHelper} class.
+ * These tests ensure that the notification functionalities, such as notifying followers about new stories related to their tags,
+ * are correctly implemented and handle edge cases such as non-existent tags or users.
+ */
 public class NotificationServiceHelperTest {
 
     @Mock
@@ -38,6 +42,10 @@ public class NotificationServiceHelperTest {
         MockitoAnnotations.initMocks(this);
     }
 
+    /**
+     * Test the notification of followers when a new story is published under a tag they follow.
+     * This test verifies that all followers of a given tag are correctly retrieved and that a notification is sent to each follower.
+     */
     @Test
     public void testNotifyFollowersOfTag() {
         Long tagId = 1L;
@@ -59,6 +67,10 @@ public class NotificationServiceHelperTest {
         verify(notificationRepository, times(2)).save(any(Notification.class));
     }
 
+    /**
+     * Test behavior when attempting to notify followers of a non-existent tag.
+     * This test ensures that the appropriate exception is thrown when a tag is not found.
+     */
     @Test(expected = IllegalArgumentException.class)
     public void testNotifyFollowersOfTag_TagNotFound() {
         Long tagId = 1L;
@@ -69,6 +81,10 @@ public class NotificationServiceHelperTest {
         notificationServiceHelper.notifyFollowersOfTag(tagId, newStory);
     }
 
+    /**
+     * Test the direct sending of a notification to a user about a new story.
+     * This method should successfully create and save a notification record.
+     */
     @Test
     public void testSendNotification() {
         LocalUser user = new LocalUser();
@@ -81,6 +97,10 @@ public class NotificationServiceHelperTest {
         verify(notificationRepository).save(any(Notification.class));
     }
 
+    /**
+     * Test the behavior of the sendNotification method when a null user is passed.
+     * This test ensures that an exception is thrown, indicating that user details are necessary for sending notifications.
+     */
     @Test(expected = IllegalArgumentException.class)
     public void testSendNotification_NullUser() {
         Stories story = new Stories();

@@ -15,6 +15,11 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
+/**
+ * This class demonstrates how to write unit tests for a service class using Mockito.
+ * The service class under test is TagsService, which provides methods for managing Tags entities.
+ * The service class depends on TagsRepository for database operations.
+ */
 public class TagsServiceTests {
 
     @Mock
@@ -23,11 +28,18 @@ public class TagsServiceTests {
     @InjectMocks
     private TagsService tagsService;
 
+    /**
+     * Sets up the test environment by initializing the service class and its dependencies.
+     */
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
+    /**
+     * Tests the addTag method of the TagsService class.
+     * This test verifies that the save method of the TagsRepository is called when addTag is invoked.
+     */
     @Test
     public void testAddTag() {
         Tags tag = new Tags();
@@ -43,6 +55,10 @@ public class TagsServiceTests {
         assertEquals(tag.getName(), savedTag.getName());
     }
 
+    /**
+     *  Tests the getAllTags method of the TagsService class.
+     *  This test verifies that the findAll method of the TagsRepository is called when getAllTags is invoked.
+     */
     @Test
     public void testGetAllTags() {
         List<Tags> tags = new ArrayList<>();
@@ -67,6 +83,10 @@ public class TagsServiceTests {
         assertEquals(tag2.getName(), foundTags.get(1).getName());
     }
 
+    /**
+     * Tests the getTagById method of the TagsService class.
+     * This test verifies that the findById method of the TagsRepository is called when getTagById is invoked.
+     */
     @Test
     public void testGetTagById() {
         Tags tag = new Tags();
@@ -82,6 +102,10 @@ public class TagsServiceTests {
         assertEquals(tag.getName(), foundTag.get().getName());
     }
 
+    /**
+     *  Tests the updateTag method of the TagsService class.
+     *  This test verifies that the findById and save methods of the TagsRepository are called when updateTag is invoked.
+     */
     @Test
     public void testUpdateTag() {
         Tags tag = new Tags();
@@ -102,6 +126,10 @@ public class TagsServiceTests {
         assertEquals(updatedTag.getName(), result.getName());
     }
 
+    /**
+     * Tests the updateTag method of the TagsService class when the tag is not found.
+     * This test ensures that the appropriate exception is thrown when the tag is not found.
+     */
     @Test
     public void testUpdateTagNotFound() {
         Tags tag = new Tags();
@@ -122,6 +150,10 @@ public class TagsServiceTests {
         }
     }
 
+    /**
+     * Tests the deleteTag method of the TagsService class.
+     * This test verifies that the findById and delete methods of the TagsRepository are called when deleteTag is invoked.
+     */
     @Test
     public void testDeleteTag() {
         Tags tag = new Tags();
@@ -135,6 +167,10 @@ public class TagsServiceTests {
         verify(tagsRepository).delete(tag);
     }
 
+    /**
+     * Tests the deleteTag method of the TagsService class when the tag is not found.
+     * This test ensures that the appropriate exception is thrown when the tag is not found.
+     */
     @Test
     public void testDeleteTagNotFound() {
         Tags tag = new Tags();

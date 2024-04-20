@@ -1,4 +1,5 @@
 package com.project.sportsnewsbackend;
+
 import com.project.sportsnewsbackend.models.LocalUser;
 import com.project.sportsnewsbackend.models.Notification;
 import com.project.sportsnewsbackend.models.Stories;
@@ -16,8 +17,12 @@ import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.ArgumentMatchers.any;
-public class NotificationServiceTest {
 
+/**
+ * Unit tests for {@link NotificationService} class.
+ * These tests verify the behavior of the notification creation and retrieval functionalities.
+ */
+public class NotificationServiceTest {
 
     @Mock
     private NotificationRepository notificationRepository;
@@ -27,14 +32,23 @@ public class NotificationServiceTest {
     private TagsRepository tagsRepository;
     @Mock
     private NotificationServiceHelper notificationServiceHelper;
+
     @InjectMocks
     private NotificationService notificationService;
 
+    /**
+     * Sets up the test environment before each test method.
+     * Initializes Mockito annotations for mocking dependencies.
+     */
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
+    /**
+     * Tests the {@link NotificationService#createNotificationForUser} method to ensure it correctly creates
+     * and saves a notification using the provided LocalUser, story, and content.
+     */
     @Test
     public void testCreateNotificationForUser() {
         // Setup
@@ -45,10 +59,14 @@ public class NotificationServiceTest {
         // Execute
         notificationService.createNotificationForUser(user, story, content);
 
-        // Verify
+        // Verify that the notification repository's save method is called once with any notification.
         verify(notificationRepository).save(any(Notification.class));
     }
 
+    /**
+     * Tests the {@link NotificationService#getNotificationsForUser} method to ensure it correctly
+     * retrieves notifications for a specific user based on the user's ID.
+     */
     @Test
     public void testGetNotificationsForUser() {
         // Setup
@@ -57,9 +75,7 @@ public class NotificationServiceTest {
         // Execute
         notificationService.getNotificationsForUser(userId);
 
-        // Verify
+        // Verify that the notification repository's findByLocalUserId method is called with the correct ID.
         verify(notificationRepository).findByLocalUserId(userId);
     }
-
-
 }
