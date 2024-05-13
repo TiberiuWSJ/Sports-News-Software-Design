@@ -12,7 +12,9 @@ import Navbar from '../components/Navbar.vue'
 
 <style>
 main {
-  width: 100vw;
-  height: 100vh;
+  width: auto;
+  height: auto;
 }
+
+
 </style>

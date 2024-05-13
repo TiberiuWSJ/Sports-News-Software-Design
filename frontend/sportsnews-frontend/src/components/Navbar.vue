@@ -41,11 +41,11 @@
   <style scoped>
   .navbar {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: flex-end;
     background-color: #333;
     padding: 10px 20px;
     color: white;
+    
   }
   
   .logo img {
