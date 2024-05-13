@@ -1,9 +1,0 @@
-com.project.sportsnewsbackend
-com.project.sportsnewsbackend.controllers
-com.project.sportsnewsbackend.models
-com.project.sportsnewsbackend.repository.LocalUser
-com.project.sportsnewsbackend.repository.Stories
-com.project.sportsnewsbackend.repository.Tags
-com.project.sportsnewsbackend.service.LocalUser
-com.project.sportsnewsbackend.service.Stories
-com.project.sportsnewsbackend.service.Tags
