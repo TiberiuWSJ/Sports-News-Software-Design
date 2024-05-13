@@ -65,7 +65,17 @@ public class LocalUserService {
      * @return the saved user entity.
      */
     public LocalUser saveUser(LocalUser user) {
+        // Check if the email already exists
+        if (localUserRepository.existsByEmail(user.getEmail())) {
+            throw new IllegalStateException("Email already in use.");
+        }
+        // Check if the combination of first name and last name already exists
+        if (localUserRepository.existsByFirstNameAndLastName(user.getFirstName(), user.getLastName())) {
+            throw new IllegalStateException("A user with the same first and last name already exists.");
+        }
+        // Save the new user if no conflicts
         return localUserRepository.save(user);
+        //return localUserRepository.save(user);
     }
 
     /**
@@ -101,6 +111,8 @@ public class LocalUserService {
         return Optional.empty();
     }
 
+    public LocalUser authenticateUser(String email, String password) {
+        return localUserRepository.findByEmailAndPassword(email, password);
+    }
 
-    // More methods can be added as per the business logic requirements.
 }

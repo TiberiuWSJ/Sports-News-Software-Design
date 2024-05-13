@@ -33,7 +33,7 @@ public class LocalUser {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = false, unique = false)
     private String password;
 
     @Column(name = "first_name", nullable = false)
@@ -46,18 +46,18 @@ public class LocalUser {
      * A flag indicating whether the user has the journalist role.
      */
     @Column(name = "isJournalist", nullable = false)
-    private Boolean isJournalist;
+    private Boolean isJournalist = false;
 
     /**
      * A flag indicating whether the user has the moderator role.
      */
     @Column(name = "isModerator", nullable = false)
-    private Boolean isModerator;
+    private Boolean isModerator = false;
 
-    @Column(name = "favorite_team", nullable = false)
+    @Column(name = "favorite_team")
     private String favoriteTeam;
 
-    @Column(name = "favorite_sportsman", nullable = false)
+    @Column(name = "favorite_sportsman")
     private String favoriteSportsman;
 
     /**

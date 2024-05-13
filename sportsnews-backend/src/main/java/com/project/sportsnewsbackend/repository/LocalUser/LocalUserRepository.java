@@ -16,5 +16,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface LocalUserRepository extends JpaRepository<LocalUser, Long> {
-    // Potential place for custom query methods, e.g., findByEmail(String email);
+    LocalUser findByEmailAndPassword(String email, String password);
+    boolean existsByEmail(String email);
+    boolean existsByFirstNameAndLastName(String firstName, String lastName);
 }

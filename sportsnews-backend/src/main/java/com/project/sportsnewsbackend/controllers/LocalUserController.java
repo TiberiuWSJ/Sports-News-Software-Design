@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Controller for managing local users within the sports news platform.
@@ -21,7 +23,6 @@ import java.util.List;
 public class LocalUserController {
 
     private final LocalUserService localUserService;
-
     /**
      * Constructs the {@link LocalUserController} with the required {@link LocalUserService}.
      *
@@ -63,9 +64,21 @@ public class LocalUserController {
      * @return A {@link ResponseEntity} containing the created user and the HTTP status.
      */
     @PostMapping
-    public ResponseEntity<LocalUser> createUser(@RequestBody LocalUser user) {
-        LocalUser newUser = localUserService.saveUser(user);
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+    public ResponseEntity<?> createUser(@RequestBody LocalUser user) {
+        try {
+            LocalUser newUser = localUserService.saveUser(user);
+            System.out.println(newUser.getEmail() + " " + newUser.getPassword() + " " + newUser.getFirstName() + " " +newUser.getLastName());
+            return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+        } catch (IllegalStateException e) {
+            // Return a response entity with a client-friendly error message and a 409 Conflict status
+            System.out.println(user.getEmail() + " " + user.getPassword() + " " + user.getFirstName() + " " +user.getLastName());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (Exception e) {
+            // General error handling for other exceptions
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while processing your request.");
+        }
+//        LocalUser newUser = localUserService.saveUser(user);
+//        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
     /**
@@ -125,4 +138,25 @@ public class LocalUserController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
+        String email = credentials.get("email");
+        String password = credentials.get("password");
+
+        LocalUser authenticatedUser = localUserService.authenticateUser(email, password);
+        if (authenticatedUser != null) {
+            Map<String, String> responseBody = new HashMap<>();
+            responseBody.put("message", "Login successful");
+            responseBody.put("firstName", authenticatedUser.getFirstName());
+            responseBody.put("lastName", authenticatedUser.getLastName());
+            return ResponseEntity.ok(responseBody);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+        }
+    }
+
+
+
+
 }
