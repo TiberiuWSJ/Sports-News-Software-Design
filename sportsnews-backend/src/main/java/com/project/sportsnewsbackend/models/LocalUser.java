@@ -63,6 +63,7 @@ public class LocalUser {
     /**
      * The list of stories authored by this user, highlighting their journalistic contributions.
      */
+    @JsonIgnore
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Stories> authoredStories;
 
@@ -70,12 +71,14 @@ public class LocalUser {
      * The tag followed by the user, indicating their primary interest within the sports domain.
      */
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "followed_tag_id") // This column links to the Tags entity.
     private Tags followedTag;
 
     /**
      * The list of stories saved by the user for later reading, indicating their interests and preferences.
      */
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(
             name = "user_saved_stories",

@@ -52,6 +52,11 @@ public class NotificationServiceHelper {
                 .orElseThrow(() -> new IllegalArgumentException("Tag not found with ID: " + tagId))
                 .getFollowers();
 
+
+        if(followers == null){
+            return;
+        }
+
         for (LocalUser follower : followers) {
             sendNotification(follower, newStory);
         }
@@ -81,5 +86,9 @@ public class NotificationServiceHelper {
         notification.setContent("A new story has been posted on one of the tags you've followed: " + story.getTitle());
         notificationRepository.save(notification);
 
+    }
+
+    public void deleteByRelatedStory(Stories story) {
+        notificationRepository.deleteByRelatedStory(story);
     }
 }

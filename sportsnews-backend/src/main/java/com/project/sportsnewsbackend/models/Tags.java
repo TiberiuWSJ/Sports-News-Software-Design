@@ -47,7 +47,7 @@ public class Tags {
      * in the topics or themes represented by the tag. This establishes a direct relationship between
      * tags and users, supporting personalized content delivery and notifications.
      */
-    @OneToMany(mappedBy = "followedTag")
+    @OneToMany(mappedBy = "followedTag", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<LocalUser> followers;
 
 

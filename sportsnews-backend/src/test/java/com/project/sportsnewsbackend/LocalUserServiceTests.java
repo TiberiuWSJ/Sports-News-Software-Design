@@ -3,6 +3,7 @@ package com.project.sportsnewsbackend;
 import com.project.sportsnewsbackend.models.LocalUser;
 import com.project.sportsnewsbackend.models.Tags;
 import com.project.sportsnewsbackend.repository.LocalUser.LocalUserRepository;
+import com.project.sportsnewsbackend.repository.Notification.NotificationRepository;
 import com.project.sportsnewsbackend.repository.Tags.TagsRepository;
 import com.project.sportsnewsbackend.service.LocalUser.LocalUserService;
 import org.junit.Before;
@@ -27,6 +28,9 @@ public class LocalUserServiceTests {
     @Mock
     private TagsRepository mockTagsRepository;
 
+    @Mock
+    NotificationRepository notificationRepository;
+
     private LocalUserService testLocalUserService;
 
 
@@ -40,7 +44,7 @@ public class LocalUserServiceTests {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        this.testLocalUserService = new LocalUserService(mockLocalUserRepository, mockTagsRepository);
+        this.testLocalUserService = new LocalUserService(mockLocalUserRepository, mockTagsRepository, notificationRepository);
     }
 
 

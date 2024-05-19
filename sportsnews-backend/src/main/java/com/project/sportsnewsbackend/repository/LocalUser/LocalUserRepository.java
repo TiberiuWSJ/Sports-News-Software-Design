@@ -4,6 +4,8 @@ import com.project.sportsnewsbackend.models.LocalUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * Spring Data JPA repository for {@link LocalUser} entities.
  * This repository provides CRUD operations and finder methods for managing {@link LocalUser} entities within the database.
@@ -16,7 +18,10 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface LocalUserRepository extends JpaRepository<LocalUser, Long> {
-    LocalUser findByEmailAndPassword(String email, String password);
+    Optional<LocalUser> findByEmail(String email);
+    Optional<LocalUser> findByFirstNameAndLastName(String firstName, String lastName);
     boolean existsByEmail(String email);
     boolean existsByFirstNameAndLastName(String firstName, String lastName);
+    LocalUser findByEmailAndPassword(String email, String password);
 }
+

@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -27,8 +26,29 @@ const router = createRouter({
     {
       path: '/',
       redirect: '/login'
-    }
+    },
+    { path: '/admin',
+      name: 'admin',
+      component: () => import('../views/AdminView.vue'),
+      meta: { requiresModerator: true }
+    },
+    { path: '/admin/users', name: 'ManageUsers', component: () => import ('../views/ManageUsersView.vue'), meta: { requiresModerator: true } },
+  { path: '/admin/stories', name: 'ManageStories', component: () => import ('../views/ManageStoriesView.vue'), meta: { requiresModerator: true } }
   ]
 })
+
+
+router.beforeEach((to, from, next) => {
+  const isModerator = JSON.parse(localStorage.getItem('isModerator'));
+  if (to.matched.some(record => record.meta.requiresModerator)) {
+    if (isModerator) {
+      next();
+    } else {
+      next('/login'); // or redirect to a forbidden page
+    }
+  } else {
+    next();
+  }
+});
 
 export default router

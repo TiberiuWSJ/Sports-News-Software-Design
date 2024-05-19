@@ -89,25 +89,44 @@ public class LocalUserController {
      * @return A {@link ResponseEntity} containing the updated user or a NOT_FOUND status.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<LocalUser> updateUser(@PathVariable Long id, @RequestBody LocalUser userDetails) {
+    public ResponseEntity<LocalUser> updateUser(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         return localUserService.findUserById(id)
                 .map(user -> {
-                    user.setEmail(userDetails.getEmail());
-                    user.setPassword(userDetails.getPassword()); // Ensure you handle password encoding if necessary
-                    user.setFirstName(userDetails.getFirstName());
-                    user.setLastName(userDetails.getLastName());
-                    user.setIsJournalist(userDetails.getIsJournalist());
-                    user.setIsModerator(userDetails.getIsModerator());
-                    user.setFavoriteTeam(userDetails.getFavoriteTeam());
-                    user.setFavoriteSportsman(userDetails.getFavoriteSportsman());
-                    // Include other fields as necessary
-
-                    // Save and return the updated user
+                    updates.forEach((key, value) -> {
+                        switch (key) {
+                            case "email":
+                                user.setEmail((String) value);
+                                break;
+                            case "password":
+                                user.setPassword((String) value); // Ensure you handle password encoding if necessary
+                                break;
+                            case "firstName":
+                                user.setFirstName((String) value);
+                                break;
+                            case "lastName":
+                                user.setLastName((String) value);
+                                break;
+                            case "isJournalist":
+                                user.setIsJournalist((Boolean) value);
+                                break;
+                            case "isModerator":
+                                user.setIsModerator((Boolean) value);
+                                break;
+                            case "favoriteTeam":
+                                user.setFavoriteTeam((String) value);
+                                break;
+                            case "favoriteSportsman":
+                                user.setFavoriteSportsman((String) value);
+                                break;
+                        }
+                    });
                     LocalUser updatedUser = localUserService.saveUser(user);
                     return new ResponseEntity<>(updatedUser, HttpStatus.OK);
                 })
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
+
 
     /**
      * Updates the user's favorite tag.
@@ -133,7 +152,7 @@ public class LocalUserController {
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id) {
         try {
             localUserService.deleteUserById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -146,15 +165,17 @@ public class LocalUserController {
 
         LocalUser authenticatedUser = localUserService.authenticateUser(email, password);
         if (authenticatedUser != null) {
-            Map<String, String> responseBody = new HashMap<>();
+            Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("message", "Login successful");
             responseBody.put("firstName", authenticatedUser.getFirstName());
             responseBody.put("lastName", authenticatedUser.getLastName());
+            responseBody.put("isModerator", authenticatedUser.getIsModerator()); // include isModerator
             return ResponseEntity.ok(responseBody);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
     }
+
 
 
 

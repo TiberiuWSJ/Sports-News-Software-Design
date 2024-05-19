@@ -3,7 +3,9 @@ package com.project.sportsnewsbackend.service.LocalUser;
 import com.project.sportsnewsbackend.models.LocalUser;
 import com.project.sportsnewsbackend.models.Tags;
 import com.project.sportsnewsbackend.repository.LocalUser.LocalUserRepository;
+import com.project.sportsnewsbackend.repository.Notification.NotificationRepository;
 import com.project.sportsnewsbackend.repository.Tags.TagsRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +27,7 @@ public class LocalUserService {
 
     private final LocalUserRepository localUserRepository;
     private final TagsRepository tagsRepository;
-
+    private final NotificationRepository notificationRepository;
     /**
      * Constructs a new LocalUserService with the given {@link LocalUserRepository}.
      *
@@ -33,9 +35,10 @@ public class LocalUserService {
      * @param tagsRepository
      */
     @Autowired
-    public LocalUserService(LocalUserRepository localUserRepository, TagsRepository tagsRepository) {
+    public LocalUserService(LocalUserRepository localUserRepository, TagsRepository tagsRepository, NotificationRepository notificationRepository) {
         this.localUserRepository = localUserRepository;
         this.tagsRepository = tagsRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     /**
@@ -65,30 +68,33 @@ public class LocalUserService {
      * @return the saved user entity.
      */
     public LocalUser saveUser(LocalUser user) {
-        // Check if the email already exists
-        if (localUserRepository.existsByEmail(user.getEmail())) {
+        Optional<LocalUser> existingUser = localUserRepository.findByEmail(user.getEmail());
+        if (existingUser.isPresent() && !existingUser.get().getId().equals(user.getId())) {
             throw new IllegalStateException("Email already in use.");
         }
-        // Check if the combination of first name and last name already exists
-        if (localUserRepository.existsByFirstNameAndLastName(user.getFirstName(), user.getLastName())) {
+        Optional<LocalUser> existingNameUser = localUserRepository.findByFirstNameAndLastName(user.getFirstName(), user.getLastName());
+        if (existingNameUser.isPresent() && !existingNameUser.get().getId().equals(user.getId())) {
             throw new IllegalStateException("A user with the same first and last name already exists.");
         }
-        // Save the new user if no conflicts
         return localUserRepository.save(user);
-        //return localUserRepository.save(user);
     }
+
 
     /**
      * Deletes a user by their ID.
      *
      * @param id the ID of the user to delete.
      */
+    @Transactional
     public void deleteUserById(Long id) {
-        // Check if the user exists before deleting
-        if (!localUserRepository.existsById(id)) {
-            throw new IllegalArgumentException("User not found with ID: " + id);
-        }
-        localUserRepository.deleteById(id);
+        LocalUser user = localUserRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + id));
+
+        // Remove all notifications for this user
+        notificationRepository.deleteAllByLocalUser(user);
+
+        // Remove the user
+        localUserRepository.delete(user);
     }
 
     public Optional<LocalUser> setUserFavoriteTag(Long userId, Long tagId) {

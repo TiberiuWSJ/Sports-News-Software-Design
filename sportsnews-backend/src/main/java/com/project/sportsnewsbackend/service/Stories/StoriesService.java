@@ -80,6 +80,7 @@ public class StoriesService {
                 System.out.println("NotificationServiceHelper is null");
             } else {
                 attachTagsToStory(savedStory, tags);
+
                 tags.forEach(tag -> notificationServiceHelper.notifyFollowersOfTag(tag.getTagID(), savedStory));
             }
         }
@@ -178,14 +179,17 @@ public class StoriesService {
      *
      * @param id The ID of the story to delete.
      */
-    public void deleteStory(Long id) throws Exception {
-        Stories story = storiesRepository.findById(id).orElse(null);
-        if (story != null) {
-            storyTagRepository.deleteAllByStoryId(id);
-            storiesRepository.delete(story);
-        }else{
-            throw new Exception("Something hasn't gone well!");
-        }
+    public void deleteStory(Long storyID) {
+        Stories story = storiesRepository.findById(storyID)
+                .orElseThrow(() -> new RuntimeException("Story not found"));
+
+        storyTagRepository.deleteAllByStoryId(storyID);
+
+        // Delete related notification
+        notificationServiceHelper.deleteByRelatedStory(story);
+
+        // Now delete the story
+        storiesRepository.delete(story);
     }
 
 

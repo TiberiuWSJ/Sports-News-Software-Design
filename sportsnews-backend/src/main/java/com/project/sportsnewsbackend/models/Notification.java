@@ -27,12 +27,7 @@ public class Notification {
     @JoinColumn(name = "user_id", nullable = false)
     private LocalUser localUser;
 
-    // Foreign key to the related Story
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "story_id", nullable = false)
     private Stories relatedStory; // Each notification points to one story
-
-
-
-
 }

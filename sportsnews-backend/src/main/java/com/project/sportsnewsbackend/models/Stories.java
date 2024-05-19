@@ -65,7 +65,7 @@ public class Stories  {
      * Each story must have an author, establishing accountability and origin.
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = false)
+    @JoinColumn(name = "author_id", nullable = true)
     @JsonIgnore
     private LocalUser author;
 
