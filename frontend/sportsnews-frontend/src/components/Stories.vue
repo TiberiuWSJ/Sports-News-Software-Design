@@ -1,69 +1,98 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Published Date</th>
-            <th>Story Content</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="story in stories" :key="story.storyID">
-            <td>{{ story.title }}</td>
-            <td>{{ formatDate(story.publishedDate) }}</td>
-            <td>{{ story.body }}</td>
-          </tr>
-        </tbody>
-      </table>
+  <div>
+    <div class="card-grid">
+      <div v-for="story in stories" :key="story.storyID">
+        <CCard class="story-card">
+          <CCardImage class="card-image" orientation="top" src="https://tinyurl.com/basicimagevute" />
+          <CCardBody>
+            <CCardTitle class="card-title">{{ story.title }}</CCardTitle>
+            <CCardText class="card-text">{{ truncateText(story.body, 50) }}</CCardText>
+            <router-link :to="{ name: 'StoryDetail', params: { id: story.storyID } }">
+              <CButton class="btn-primary">Go to Story</CButton>
+            </router-link>
+          </CCardBody>
+        </CCard>
+      </div>
     </div>
-  </template>
-  
+  </div>
+</template>
+
 <script>
-  export default {
-    data() {
-      return {
-        stories: []
-      };
-    },
-    mounted() {
-      this.fetchStories();
-    },
-    methods: {
-      async fetchStories() {
-        try {
-          const response = await fetch('http://localhost:8080/stories');
-          if (response.ok) {
-            this.stories = await response.json();
-          } else {
-            throw new Error('Failed to fetch stories');
-          }
-        } catch (error) {
-          console.error("There was an error!", error);
+import { CCard, CCardImage, CCardBody, CCardTitle, CCardText, CButton } from '@coreui/vue';
+
+export default {
+  components: {
+    CCard,
+    CCardImage,
+    CCardBody,
+    CCardTitle,
+    CCardText,
+    CButton
+  },
+  data() {
+    return {
+      stories: []
+    };
+  },
+  mounted() {
+    this.fetchStories();
+  },
+  methods: {
+    async fetchStories() {
+      try {
+        const response = await fetch('http://localhost:8080/stories');
+        if (response.ok) {
+          this.stories = await response.json();
+        } else {
+          throw new Error('Failed to fetch stories');
         }
-      },
-      formatDate(date) {
-        return new Date(date).toLocaleDateString("en-GB");
+      } catch (error) {
+        console.error("There was an error!", error);
       }
+    },
+    truncateText(text, length) {
+      if (text.length <= length) {
+        return text;
+      }
+      return text.substring(0, length) + '...';
+    },
+    formatDate(date) {
+      return new Date(date).toLocaleDateString("en-GB");
     }
-  };
+  }
+};
 </script>
 
 <style>
-  .table {
-    width: 100%;
-    border-collapse: collapse;
-  }
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: 20px;
+}
 
-  .table th,
-  .table td {
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
-  }
+.story-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-  .table th {
-    background-color: #f2f2f2;
-    color: #333;
-    font-weight: bold;
-  }
+.card-image {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+.card-title {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.card-text {
+  font-size: 0.875em;
+}
+
+.btn-primary {
+  margin-top: 10px;
+}
 </style>
