@@ -1,11 +1,12 @@
 <script setup>
 import AdminPage from '../components/AdminPage.vue'
-import Navbar from '../components/Navbar.vue'
+import Stories from '../components/Stories.vue'
+import AdminNavbar from '../components/AdminNavBar.vue'
 </script>
 
 <template>
   <main>
-    <Navbar />
-    <AdminPage />
+    <AdminNavbar />
+    <Stories />
   </main>
 </template>

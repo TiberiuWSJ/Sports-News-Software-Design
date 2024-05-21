@@ -121,4 +121,9 @@ public class LocalUserService {
         return localUserRepository.findByEmailAndPassword(email, password);
     }
 
+    public Optional<LocalUser> findUserByEmail(String email) {
+        return localUserRepository.findByEmail(email);
+    }
+
+
 }

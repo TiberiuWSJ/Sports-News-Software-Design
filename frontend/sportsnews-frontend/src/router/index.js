@@ -27,13 +27,20 @@ const router = createRouter({
       path: '/',
       redirect: '/login'
     },
-    { path: '/admin',
+
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('../views/ProfileView.vue')
+    },
+
+    { path: '/adminView',
       name: 'admin',
       component: () => import('../views/AdminView.vue'),
       meta: { requiresModerator: true }
     },
     { path: '/admin/users', name: 'ManageUsers', component: () => import ('../views/ManageUsersView.vue'), meta: { requiresModerator: true } },
-  { path: '/admin/stories', name: 'ManageStories', component: () => import ('../views/ManageStoriesView.vue'), meta: { requiresModerator: true } }
+    { path: '/admin/stories', name: 'ManageStories', component: () => import ('../views/ManageStoriesView.vue'), meta: { requiresModerator: true } }
   ]
 })
 

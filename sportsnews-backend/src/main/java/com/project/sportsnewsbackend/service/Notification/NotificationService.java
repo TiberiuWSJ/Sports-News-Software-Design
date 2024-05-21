@@ -6,7 +6,6 @@ import com.project.sportsnewsbackend.models.Stories;
 import com.project.sportsnewsbackend.repository.LocalUser.LocalUserRepository;
 import com.project.sportsnewsbackend.repository.Notification.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,5 +57,13 @@ public class NotificationService {
         // This method assumes you have a custom query defined in NotificationRepository
         // to fetch notifications by user ID
         return notificationRepository.findByLocalUserId(userId);
+    }
+
+    public Optional<Notification> findNotificationById(Long id) {
+        return notificationRepository.findById(id);
+    }
+
+    public void deleteNotificationById(Long id) {
+        notificationRepository.deleteById(id);
     }
 }

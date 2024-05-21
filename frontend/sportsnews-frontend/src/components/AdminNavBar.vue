@@ -1,6 +1,8 @@
 <template>
   <nav class="navbar">
     <div class="menu">
+      <router-link to="/admin/users" class="nav-link">Manage Users</router-link>
+      <router-link to="/admin/stories" class="nav-link">Manage Stories</router-link>
       <div class="notification-container" @click="toggleNotificationDropdown">
         <i class="fas fa-bell"></i>
         <div v-if="isNotificationOpen" class="notification-dropdown">
@@ -12,14 +14,16 @@
           </div>
         </div>
       </div>
-      <button @click="toggleDropdown" class="dropdown-button">
-        {{ userName }}
-        <i class="fas fa-chevron-down"></i>
-      </button>
-      <div v-if="isOpen" class="dropdown-content">
-        <a href="#" @click="profileView">Profile</a>
-        <a href="#">Settings</a>
-        <a href="#" @click="logout">Logout</a>
+      <div class="dropdown">
+        <button @click="toggleDropdown" class="dropdown-button">
+          {{ userName }}
+          <i class="fas fa-chevron-down"></i>
+        </button>
+        <div v-if="isOpen" class="dropdown-content">
+          <a href="#" @click="profileView">Profile</a>
+          <a href="#">Settings</a>
+          <a href="#" @click="logout">Logout</a>
+        </div>
       </div>
     </div>
   </nav>
@@ -29,7 +33,7 @@
 import axios from 'axios';
 
 export default {
-  name: 'Navbar',
+  name: 'AdminNavbar',
   data() {
     return {
       isOpen: false,
@@ -49,13 +53,6 @@ export default {
   methods: {
     toggleDropdown() {
       this.isOpen = !this.isOpen;
-    },
-    logout() {
-      localStorage.clear();
-      this.$router.push('/login');
-    },
-    profileView() {
-      this.$router.push('/profile');
     },
     toggleNotificationDropdown() {
       this.isNotificationOpen = !this.isNotificationOpen;
@@ -84,6 +81,13 @@ export default {
       } catch (error) {
         console.error('Error deleting notification:', error);
       }
+    },
+    logout() {
+      localStorage.clear();
+      this.$router.push('/login');
+    },
+    profileView() {
+      this.$router.push('/profile');
     }
   }
 };
@@ -104,9 +108,19 @@ export default {
 }
 
 .menu {
-  position: relative;
   display: flex;
   align-items: center;
+  position: relative;
+}
+
+.nav-link {
+  margin-right: 20px;
+  color: white;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
 }
 
 .notification-container {
@@ -141,6 +155,10 @@ export default {
   font-style: italic;
 }
 
+.dropdown {
+  position: relative;
+}
+
 .dropdown-button {
   background: none;
   border: none;
@@ -152,7 +170,7 @@ export default {
 }
 
 .dropdown-button i {
-  margin-left: 10px; /* Adjust the margin value to your preference */
+  margin-left: 10px;
 }
 
 .dropdown-content {

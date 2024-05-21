@@ -2,6 +2,7 @@ package com.project.sportsnewsbackend.controllers;
 
 import com.project.sportsnewsbackend.models.LocalUser;
 import com.project.sportsnewsbackend.service.LocalUser.LocalUserService;
+import com.project.sportsnewsbackend.service.Tags.TagsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,14 +24,17 @@ import java.util.Map;
 public class LocalUserController {
 
     private final LocalUserService localUserService;
+    private final TagsService tagsService;
+
     /**
      * Constructs the {@link LocalUserController} with the required {@link LocalUserService}.
      *
      * @param localUserService The service used for user operations.
      */
     @Autowired
-    public LocalUserController(LocalUserService localUserService) {
+    public LocalUserController(LocalUserService localUserService, TagsService tagsService) {
         this.localUserService = localUserService;
+        this.tagsService = tagsService;
     }
 
     /**
@@ -114,9 +118,17 @@ public class LocalUserController {
                                 break;
                             case "favoriteTeam":
                                 user.setFavoriteTeam((String) value);
+                                tagsService.getAllTags().stream()
+                                        .filter(tag -> tag.getName().equals(value))
+                                        .findFirst()
+                                        .ifPresent(user::setFollowedTag);
                                 break;
                             case "favoriteSportsman":
                                 user.setFavoriteSportsman((String) value);
+                                tagsService.getAllTags().stream()
+                                        .filter(tag -> tag.getName().equals(value))
+                                        .findFirst()
+                                        .ifPresent(user::setFollowedTag);
                                 break;
                         }
                     });
@@ -169,12 +181,28 @@ public class LocalUserController {
             responseBody.put("message", "Login successful");
             responseBody.put("firstName", authenticatedUser.getFirstName());
             responseBody.put("lastName", authenticatedUser.getLastName());
+            responseBody.put("userEmail", authenticatedUser.getEmail());
             responseBody.put("isModerator", authenticatedUser.getIsModerator()); // include isModerator
             return ResponseEntity.ok(responseBody);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
     }
+
+    /**
+     * Retrieves a single user by their email.
+     *
+     * @param email The email of the user to retrieve.
+     * @return A {@link ResponseEntity} containing the found {@link LocalUser} or a NOT_FOUND status.
+     */
+    @GetMapping("/email/{email}")
+    public ResponseEntity<LocalUser> getUserByEmail(@PathVariable String email) {
+        System.out.println(email);
+        return localUserService.findUserByEmail(email)
+                .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
 
 
 

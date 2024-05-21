@@ -47,11 +47,12 @@ export default {
         // Store the user details in localStorage
         localStorage.setItem('userFirstName', response.data.firstName);
         localStorage.setItem('userLastName', response.data.lastName);
+        localStorage.setItem('userEmail', response.data.userEmail); // Store the email for future use
         localStorage.setItem('isModerator', response.data.isModerator);
 
         // Redirect to the appropriate page based on the isModerator status
         if (response.data.isModerator) {
-          this.$router.push('/admin');
+          this.$router.push('/adminView');
         } else {
           this.$router.push('/stories');
         }
