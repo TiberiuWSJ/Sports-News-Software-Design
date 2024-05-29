@@ -50,10 +50,14 @@ export default {
         localStorage.setItem('userLastName', response.data.lastName);
         localStorage.setItem('userEmail', response.data.userEmail); // Store the email for future use
         localStorage.setItem('isModerator', response.data.isModerator);
+        localStorage.setItem('isJournalist', response.data.isJournalist); // Store the journalist status (if available
 
         // Redirect to the appropriate page based on the isModerator status
+        // Redirect to the appropriate page based on the roles
         if (response.data.isModerator) {
           this.$router.push('/adminView');
+        } else if (response.data.isJournalist) {
+          this.$router.push('/journalistView');
         } else {
           this.$router.push('/stories');
         }

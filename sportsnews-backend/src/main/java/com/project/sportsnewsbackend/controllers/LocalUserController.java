@@ -185,7 +185,8 @@ public class LocalUserController {
             responseBody.put("firstName", authenticatedUser.getFirstName());
             responseBody.put("lastName", authenticatedUser.getLastName());
             responseBody.put("userEmail", authenticatedUser.getEmail());
-            responseBody.put("isModerator", authenticatedUser.getIsModerator()); // include isModerator
+            responseBody.put("isModerator", authenticatedUser.getIsModerator());
+            responseBody.put("isJournalist", authenticatedUser.getIsJournalist());// include isModerator
             return ResponseEntity.ok(responseBody);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
