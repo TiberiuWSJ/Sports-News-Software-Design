@@ -1,9 +1,11 @@
 package com.project.sportsnewsbackend.service.LocalUser;
 
 import com.project.sportsnewsbackend.models.LocalUser;
+import com.project.sportsnewsbackend.models.Stories;
 import com.project.sportsnewsbackend.models.Tags;
 import com.project.sportsnewsbackend.repository.LocalUser.LocalUserRepository;
 import com.project.sportsnewsbackend.repository.Notification.NotificationRepository;
+import com.project.sportsnewsbackend.repository.Stories.StoriesRepository;
 import com.project.sportsnewsbackend.repository.Tags.TagsRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,7 @@ public class LocalUserService {
     private final LocalUserRepository localUserRepository;
     private final TagsRepository tagsRepository;
     private final NotificationRepository notificationRepository;
+    private final StoriesRepository storiesRepository;
     /**
      * Constructs a new LocalUserService with the given {@link LocalUserRepository}.
      *
@@ -35,10 +38,11 @@ public class LocalUserService {
      * @param tagsRepository
      */
     @Autowired
-    public LocalUserService(LocalUserRepository localUserRepository, TagsRepository tagsRepository, NotificationRepository notificationRepository) {
+    public LocalUserService(LocalUserRepository localUserRepository, TagsRepository tagsRepository, NotificationRepository notificationRepository, StoriesRepository storiesRepository) {
         this.localUserRepository = localUserRepository;
         this.tagsRepository = tagsRepository;
         this.notificationRepository = notificationRepository;
+        this.storiesRepository = storiesRepository;
     }
 
     /**
@@ -123,6 +127,20 @@ public class LocalUserService {
 
     public Optional<LocalUser> findUserByEmail(String email) {
         return localUserRepository.findByEmail(email);
+    }
+
+    public boolean addStoryToFavorites(Long userId, Long storyId) {
+        Optional<LocalUser> userOptional = localUserRepository.findById(userId);
+        Optional<Stories> storyOptional = storiesRepository.findById(storyId);
+
+        if (userOptional.isPresent() && storyOptional.isPresent()) {
+            LocalUser user = userOptional.get();
+            Stories story = storyOptional.get();
+            user.getSavedStories().add(story);
+            localUserRepository.save(user);
+            return true;
+        }
+        return false;
     }
 
 

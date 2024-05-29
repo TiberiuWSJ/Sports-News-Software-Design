@@ -1,6 +1,7 @@
 package com.project.sportsnewsbackend.controllers;
 
 import com.project.sportsnewsbackend.models.LocalUser;
+import com.project.sportsnewsbackend.models.Stories;
 import com.project.sportsnewsbackend.service.LocalUser.LocalUserService;
 import com.project.sportsnewsbackend.service.Tags.TagsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Controller for managing local users within the sports news platform.
@@ -179,6 +181,7 @@ public class LocalUserController {
         if (authenticatedUser != null) {
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("message", "Login successful");
+            responseBody.put("userId", authenticatedUser.getId());
             responseBody.put("firstName", authenticatedUser.getFirstName());
             responseBody.put("lastName", authenticatedUser.getLastName());
             responseBody.put("userEmail", authenticatedUser.getEmail());
@@ -202,9 +205,6 @@ public class LocalUserController {
                 .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-
-
-
 
 
 

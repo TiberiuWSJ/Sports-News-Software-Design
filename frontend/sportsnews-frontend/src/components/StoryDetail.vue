@@ -4,11 +4,15 @@
     <img :src="story.imageURL || 'https://tinyurl.com/basicimagevute'" alt="Story Image" class="story-image" />
     <h1 class="story-title">{{ story.title }}</h1>
     <p class="story-body">{{ story.body }}</p>
+    <button :disabled="isFavorite" @click="addToFavorites" class="favorite-button">
+      <i class="fas fa-heart"></i> <span>{{ isFavorite ? '  Added to Favorites' : '  Add to Favorites' }}</span>
+    </button>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import axios from 'axios';
 
 interface Story {
   imageURL: string;
@@ -26,11 +30,13 @@ export default defineComponent({
   data() {
     return {
       story: null as Story | null,
-      loading: true
+      loading: true,
+      isFavorite: false // Track if the story is already a favorite
     };
   },
   mounted() {
     this.fetchStory();
+    this.checkIfFavorite();
   },
   methods: {
     async fetchStory() {
@@ -45,6 +51,25 @@ export default defineComponent({
       } catch (error) {
         console.error("There was an error!", error);
         this.loading = false;
+      }
+    },
+    async checkIfFavorite() {
+      try {
+        const userId = localStorage.getItem('userId');
+        const response = await axios.get(`http://localhost:8080/favorites/user/${userId}`);
+        const favorites = response.data;
+        this.isFavorite = favorites.some((favorite: Story) => favorite.storyID === parseInt(this.id));
+      } catch (error) {
+        console.error('Error checking favorite status:', error);
+      }
+    },
+    async addToFavorites() {
+      try {
+        const userId = localStorage.getItem('userId');
+        await axios.post(`http://localhost:8080/favorites/user/${userId}/story/${this.id}`);
+        this.isFavorite = true;
+      } catch (error) {
+        console.error('Error adding to favorites:', error);
       }
     }
   }
@@ -86,6 +111,27 @@ export default defineComponent({
   color: #555;
   line-height: 1.6;
   text-align: justify;
+}
+
+.favorite-button {
+  display: inline-flex;
+  align-items: center;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.favorite-button[disabled] {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.favorite-button i {
+  margin-right: 8px; /* Adjust the space as needed */
 }
 
 .loading {

@@ -12,6 +12,18 @@
           </div>
         </div>
       </div>
+      <div class="favorites-container" @click="toggleFavoritesDropdown">
+        <i class="fas fa-heart"></i>
+        <div v-if="isFavoritesOpen" class="favorites-dropdown">
+          <div v-if="favorites.length === 0" class="favorites-item no-favorites">
+            <p>No saved stories. Start adding your favorite stories!</p>
+          </div>
+          <div v-else v-for="favorite in favorites" :key="favorite.storyID" class="favorites-item">
+            <p @click="handleFavoriteClick(favorite)" class="favorite-title">{{ favorite.title }}</p>
+            <span class="delete-favorite" @click.stop="handleDeleteFavorite(favorite)">&times;</span>
+          </div>
+        </div>
+      </div>
       <button @click="toggleDropdown" class="dropdown-button">
         {{ userName }}
         <i class="fas fa-chevron-down"></i>
@@ -34,7 +46,9 @@ export default {
     return {
       isOpen: false,
       isNotificationOpen: false,
-      notifications: []
+      isFavoritesOpen: false,
+      notifications: [],
+      favorites: []
     };
   },
   computed: {
@@ -45,6 +59,7 @@ export default {
   },
   mounted() {
     this.fetchNotifications();
+    this.fetchFavorites();
   },
   methods: {
     toggleDropdown() {
@@ -60,6 +75,9 @@ export default {
     toggleNotificationDropdown() {
       this.isNotificationOpen = !this.isNotificationOpen;
     },
+    toggleFavoritesDropdown() {
+      this.isFavoritesOpen = !this.isFavoritesOpen;
+    },
     async fetchNotifications() {
       try {
         const userEmail = localStorage.getItem('userEmail');
@@ -69,12 +87,37 @@ export default {
         console.error('Error fetching notifications:', error);
       }
     },
+    async fetchFavorites() {
+      try {
+        const userId = localStorage.getItem('userId');
+        const response = await axios.get(`http://localhost:8080/favorites/user/${userId}`);
+        this.favorites = response.data;
+      } catch (error) {
+        console.error('Error fetching favorites:', error);
+      }
+    },
     async handleNotificationClick(notification) {
       try {
         await this.deleteNotification(notification.id);
         this.$router.push({ name: 'StoryDetail', params: { id: notification.relatedStory.storyID } });
       } catch (error) {
         console.error('Error handling notification click:', error);
+      }
+    },
+    async handleFavoriteClick(favorite) {
+      try {
+        this.$router.push({ name: 'StoryDetail', params: { id: favorite.storyID } });
+      } catch (error) {
+        console.error('Error handling favorite click:', error);
+      }
+    },
+    async handleDeleteFavorite(favorite) {
+      try {
+        const userId = localStorage.getItem('userId');
+        await axios.delete(`http://localhost:8080/favorites/user/${userId}/story/${favorite.storyID}`);
+        this.favorites = this.favorites.filter(fav => fav.storyID !== favorite.storyID);
+      } catch (error) {
+        console.error('Error deleting favorite:', error);
       }
     },
     async deleteNotification(notificationId) {
@@ -109,14 +152,16 @@ export default {
   align-items: center;
 }
 
-.notification-container {
+.notification-container,
+.favorites-container {
   position: relative;
   margin-right: 20px;
   cursor: pointer;
   color: white;
 }
 
-.notification-dropdown {
+.notification-dropdown,
+.favorites-dropdown {
   position: absolute;
   right: 0;
   top: 100%;
@@ -126,19 +171,37 @@ export default {
   z-index: 1;
 }
 
-.notification-item {
+.notification-item,
+.favorites-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 10px;
   border-bottom: 1px solid #ddd;
 }
 
-.notification-item p {
+.notification-item p,
+.favorites-item p {
   margin: 0;
   color: black;
 }
 
-.no-notifications {
+.favorite-title {
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+.delete-favorite {
+  cursor: pointer;
+  color: grey;
+  margin-left: 10px;
+}
+
+.no-notifications,
+.no-favorites {
   color: grey;
   font-style: italic;
+  padding: 10px;
 }
 
 .dropdown-button {

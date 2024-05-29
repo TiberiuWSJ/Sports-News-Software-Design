@@ -45,6 +45,7 @@ export default {
         console.log(response.data.message); // Log the message from the server
 
         // Store the user details in localStorage
+        localStorage.setItem('userId', response.data.userId); // Store the user ID (or token
         localStorage.setItem('userFirstName', response.data.firstName);
         localStorage.setItem('userLastName', response.data.lastName);
         localStorage.setItem('userEmail', response.data.userEmail); // Store the email for future use

@@ -14,6 +14,18 @@
           </div>
         </div>
       </div>
+      <div class="favorite-container" @click="toggleFavoriteDropdown">
+        <i class="fas fa-heart"></i>
+        <div v-if="isFavoriteOpen" class="favorite-dropdown">
+          <div v-if="favorites.length === 0" class="favorite-item no-favorites">
+            <p>No favorite stories added yet.</p>
+          </div>
+          <div v-else v-for="favorite in favorites" :key="favorite.storyID" class="favorite-item">
+            <p @click="goToStory(favorite)">{{ favorite.title }}</p>
+            <i class="fas fa-times" @click.stop="removeFavorite(favorite.storyID)"></i>
+          </div>
+        </div>
+      </div>
       <div class="dropdown">
         <button @click="toggleDropdown" class="dropdown-button">
           {{ userName }}
@@ -38,7 +50,9 @@ export default {
     return {
       isOpen: false,
       isNotificationOpen: false,
-      notifications: []
+      isFavoriteOpen: false,
+      notifications: [],
+      favorites: []
     };
   },
   computed: {
@@ -49,6 +63,7 @@ export default {
   },
   mounted() {
     this.fetchNotifications();
+    this.fetchFavorites();
   },
   methods: {
     toggleDropdown() {
@@ -56,6 +71,9 @@ export default {
     },
     toggleNotificationDropdown() {
       this.isNotificationOpen = !this.isNotificationOpen;
+    },
+    toggleFavoriteDropdown() {
+      this.isFavoriteOpen = !this.isFavoriteOpen;
     },
     async fetchNotifications() {
       try {
@@ -81,6 +99,27 @@ export default {
       } catch (error) {
         console.error('Error deleting notification:', error);
       }
+    },
+    async fetchFavorites() {
+      try {
+        const userId = localStorage.getItem('userId');
+        const response = await axios.get(`http://localhost:8080/favorites/user/${userId}`);
+        this.favorites = response.data;
+      } catch (error) {
+        console.error('Error fetching favorites:', error);
+      }
+    },
+    async removeFavorite(storyId) {
+      try {
+        const userId = localStorage.getItem('userId');
+        await axios.delete(`http://localhost:8080/favorites/user/${userId}/story/${storyId}`);
+        this.favorites = this.favorites.filter(favorite => favorite.storyID !== storyId);
+      } catch (error) {
+        console.error('Error removing favorite:', error);
+      }
+    },
+    goToStory(story) {
+      this.$router.push({ name: 'StoryDetail', params: { id: story.storyID } });
     },
     logout() {
       localStorage.clear();
@@ -123,14 +162,14 @@ export default {
   text-decoration: underline;
 }
 
-.notification-container {
+.notification-container, .favorite-container {
   position: relative;
   margin-right: 20px;
   cursor: pointer;
   color: white;
 }
 
-.notification-dropdown {
+.notification-dropdown, .favorite-dropdown {
   position: absolute;
   right: 0;
   top: 100%;
@@ -140,19 +179,28 @@ export default {
   z-index: 1;
 }
 
-.notification-item {
+.notification-item, .favorite-item {
   padding: 10px;
   border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.notification-item p {
+.notification-item p, .favorite-item p {
   margin: 0;
   color: black;
+  cursor: pointer;
 }
 
-.no-notifications {
+.no-notifications, .no-favorites {
   color: grey;
   font-style: italic;
+}
+
+.favorite-item i {
+  color: grey;
+  cursor: pointer;
 }
 
 .dropdown {
