@@ -24,6 +24,12 @@
           </div>
         </div>
       </div>
+      <input type="text" v-model="searchQuery" @input="performSearch" placeholder="Search stories..." class="search-input" />
+      <div v-if="searchResults.length > 0" class="search-dropdown">
+        <div v-for="story in searchResults" :key="story.storyID" class="search-item" @click="goToStory(story)">
+          <p>{{ story.title }}</p>
+        </div>
+      </div>
       <button @click="toggleDropdown" class="dropdown-button">
         {{ userName }}
         <i class="fas fa-chevron-down"></i>
@@ -48,7 +54,9 @@ export default {
       isNotificationOpen: false,
       isFavoritesOpen: false,
       notifications: [],
-      favorites: []
+      favorites: [],
+      searchQuery: '',
+      searchResults: []
     };
   },
   computed: {
@@ -127,6 +135,21 @@ export default {
       } catch (error) {
         console.error('Error deleting notification:', error);
       }
+    },
+    async performSearch() {
+      if (this.searchQuery.trim() === '') {
+        this.searchResults = [];
+        return;
+      }
+      try {
+        const response = await axios.get(`http://localhost:8080/stories/search?keyword=${this.searchQuery}`);
+        this.searchResults = response.data;
+      } catch (error) {
+        console.error('Error searching stories:', error);
+      }
+    },
+    goToStory(story) {
+      this.$router.push({ name: 'StoryDetail', params: { id: story.storyID } });
     }
   }
 };
@@ -237,6 +260,40 @@ export default {
 }
 
 .dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+.search-input {
+  margin-right: 20px;
+  padding: 5px;
+  border-radius: 4px;
+  border: none;
+}
+
+.search-dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background-color: #f9f9f9;
+  min-width: 300px;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.search-item {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.search-item p {
+  margin: 0;
+  color: black;
+}
+
+.search-item:hover {
   background-color: #f1f1f1;
 }
 </style>

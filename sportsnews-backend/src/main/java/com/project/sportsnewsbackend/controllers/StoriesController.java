@@ -119,4 +119,10 @@ public class StoriesController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Stories>> searchStories(@RequestParam("keyword") String keyword) {
+        List<Stories> stories = storiesService.searchStories(keyword);
+        return ResponseEntity.ok(stories);
+    }
 }

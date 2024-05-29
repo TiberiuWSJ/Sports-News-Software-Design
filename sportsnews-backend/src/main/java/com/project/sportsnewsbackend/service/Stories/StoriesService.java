@@ -192,6 +192,10 @@ public class StoriesService {
         storiesRepository.delete(story);
     }
 
+    public List<Stories> searchStories(String keyword) {
+        return storiesRepository.searchStories(keyword);
+    }
+
 
 
 

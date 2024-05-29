@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Repository interface for {@link Stories} entities. It extends the {@link JpaRepository} interface
  * provided by Spring Data JPA, inheriting basic CRUD operations for managing {@link Stories} entities
@@ -28,4 +30,7 @@ public interface StoriesRepository extends JpaRepository<Stories, Long> {
     @Modifying
     @Query("DELETE FROM Stories s WHERE s.storyID = :id")
     void deleteByIdCustom(@Param("id") Long id);
+
+    @Query("SELECT s FROM Stories s WHERE s.title LIKE %:keyword% OR s.body LIKE %:keyword%")
+    List<Stories> searchStories(String keyword);
 }
