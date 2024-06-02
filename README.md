@@ -20,6 +20,15 @@ A dynamic tagging system categorizes stories with specific sports, teams, athlet
 ### Personalized News Feed
 Users can tailor their news feed by following favorite teams or athletes, creating a personalized space within the platform that caters exclusively to their preferences.
 
+### Notification System
+A custom notification service leverages Spring's event-driven capabilities to alert users of new stories in their areas of interest, enhancing user engagement.
+
+### Search Functionality
+Incorporating Spring Data JPA and Hibernate Search, the application provides advanced search capabilities. It indexes stories for full-text searching, allowing users to find content based on titles, tags, and textual content within stories.
+
+### Favorites Management
+Users can save stories to their favorites and manage them through the platform, ensuring they can easily access their preferred content at any time.
+
 ## Technology Stack
 
 ### Backend
@@ -31,12 +40,19 @@ Users can tailor their news feed by following favorite teams or athletes, creati
 ### Database
 **MySQL**: For data storage, MySQL offers a reliable, efficient solution. It's used to manage user profiles, story archives, and the complex relationships between tags, stories, and user preferences.
 
-## Technical Architecture
+### Frontend
+**Vue.js**: A progressive JavaScript framework used for building user interfaces. Vue.js is easy to integrate with other projects and libraries, making it ideal for our dynamic and interactive application.
 
+**Axios**: A promise-based HTTP client for the browser and Node.js, used for making HTTP requests to our backend APIs.
+
+**Vue Router**: The official router for Vue.js, it deeply integrates with Vue.js core to make building single-page applications a breeze.
+
+## Technical Architecture
 
 ### RESTful API Design
 The backend is structured around a RESTful architecture, offering a set of well-defined APIs for frontend interaction, story submission, user management, and more, ensuring a decoupled, scalable application structure.
 
+#### User Controller
 ##### Get All Users
 - **GET** `/users`
   - Retrieves a list of all users.
@@ -69,6 +85,7 @@ The backend is structured around a RESTful architecture, offering a set of well-
   - Deletes a user by their ID.
   - Path Variable: `id` - The ID of the user to delete.
 
+#### Story Controller
 ##### Get All Stories
 - **GET** `/stories`
   - Retrieves a list of all stories.
@@ -94,6 +111,25 @@ The backend is structured around a RESTful architecture, offering a set of well-
   - Deletes a story by its ID.
   - Path Variable: `id` - The ID of the story to delete.
 
+#### Favorite Controller
+##### Get All Favorites for a User
+- **GET** `/favorites/user/{userId}`
+  - Retrieves all favorite stories for a user.
+  - Path Variable: `userId` - The ID of the user.
+
+##### Add Favorite Story for a User
+- **POST** `/favorites/user/{userId}/story/{storyId}`
+  - Adds a story to a user's favorites.
+  - Path Variables:
+    - `userId` - The ID of the user.
+    - `storyId` - The ID of the story to add to favorites.
+
+##### Remove Favorite Story for a User
+- **DELETE** `/favorites/user/{userId}/story/{storyId}`
+  - Removes a story from a user's favorites.
+  - Path Variables:
+    - `userId` - The ID of the user.
+    - `storyId` - The ID of the story to remove from favorites.
 
 ### Entity-Relationship Model
 The database schema is designed to support complex relationships:
@@ -102,13 +138,7 @@ The database schema is designed to support complex relationships:
 - **Tags** categorize stories for efficient discovery.
 
 ### Database Diagram 
-![Alt Database Diagram](database_Diagram_2.png)
-
-### Notification System
-A custom notification service leverages Spring's event-driven capabilities to alert users of new stories in their areas of interest, enhancing user engagement.
-
-### Search Functionality
-Incorporating Spring Data JPA and Hibernate Search, the application provides advanced search capabilities. It indexes stories for full-text searching, allowing users to find content based on titles, tags, and textual content within stories.
+![Database Diagram](database_Diagram_2.png)
 
 ## Conclusion
 The Sports News Application stands as a testament to modern software design principles, offering a rich, user-centered experience backed by a robust, scalable technology stack. It promises to be a vibrant platform for sports enthusiasts and journalists alike, bringing the latest sports narratives to a global audience with precision and flair.
