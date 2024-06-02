@@ -47,6 +47,15 @@ Users can save stories to their favorites and manage them through the platform, 
 
 **Vue Router**: The official router for Vue.js, it deeply integrates with Vue.js core to make building single-page applications a breeze.
 
+### Frontend Components
+- **Navbar**: Displays navigation links, notifications, favorites, and a search bar.
+- **Login and Signup**: Handles user authentication.
+- **Profile**: Allows users to update their personal information and preferences.
+- **Story Management**: For journalists and admins to create, update, and delete stories.
+- **Story Detail**: Displays the content of a single story.
+- **Favorites Management**: Allows users to view and manage their favorite stories.
+- **Notifications**: Displays notifications for users.
+
 ## Technical Architecture
 
 ### RESTful API Design
@@ -130,6 +139,25 @@ The backend is structured around a RESTful architecture, offering a set of well-
   - Path Variables:
     - `userId` - The ID of the user.
     - `storyId` - The ID of the story to remove from favorites.
+
+#### Notification Controller
+##### Get All Notifications for a User
+- **GET** `/notifications/user/{userEmail}`
+  - Retrieves all notifications for a user.
+  - Path Variable: `userEmail` - The email of the user.
+
+##### Create Notification for a User
+- **POST** `/notifications/user/{userId}/story/{storyId}`
+  - Creates a notification for a user about a story.
+  - Path Variables:
+    - `userId` - The ID of the user.
+    - `storyId` - The ID of the story.
+  - Request Body: Content of the notification.
+
+##### Delete Notification
+- **DELETE** `/notifications/{id}`
+  - Deletes a notification by its ID.
+  - Path Variable: `id` - The ID of the notification.
 
 ### Entity-Relationship Model
 The database schema is designed to support complex relationships:
