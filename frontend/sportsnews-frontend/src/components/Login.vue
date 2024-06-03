@@ -1,6 +1,9 @@
 <template>
   <div class="login-container">
-    <h1>Login Page</h1>
+    <div class="logo-container">
+      <img src="https://i.imgur.com/OX2VEve.png" alt="Logo" class="logo" />
+    </div>
+    <h1>Login</h1>
     <form @submit.prevent="submitForm">
       <div class="form-group">
         <label for="email">Email:</label>
@@ -80,6 +83,16 @@ export default {
   align-items: center;
   justify-content: center;
   min-height: 100vh; /* This makes the container full height */
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px; /* Add some space between the logo and the heading */
+}
+
+.logo {
+  height: 200px; /* Adjust as needed */
 }
 
 .form-group {

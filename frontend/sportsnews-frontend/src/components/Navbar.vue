@@ -1,5 +1,8 @@
 <template>
   <nav class="navbar">
+    <div class="logo-container">
+      <img src="https://i.imgur.com/OX2VEve.png" alt="Logo" class="logo" />
+    </div>
     <div class="menu">
       <div class="notification-container" @click="toggleNotificationDropdown">
         <i class="fas fa-bell"></i>
@@ -158,7 +161,7 @@ export default {
 <style scoped>
 .navbar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   background-color: #333;
   padding: 10px 20px;
   color: white;
@@ -169,8 +172,16 @@ export default {
   z-index: 1000;
 }
 
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 60px; /* Adjust as needed */
+}
+
 .menu {
-  position: relative;
   display: flex;
   align-items: center;
 }

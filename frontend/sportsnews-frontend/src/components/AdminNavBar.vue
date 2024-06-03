@@ -1,5 +1,8 @@
 <template>
   <nav class="navbar">
+    <div class="logo-container">
+      <img src="https://i.imgur.com/OX2VEve.png" alt="Logo" class="logo" />
+    </div>
     <div class="menu">
       <router-link to="/admin/users" class="nav-link">Manage Users</router-link>
       <router-link to="/admin/stories" class="nav-link">Manage Stories</router-link>
@@ -155,7 +158,7 @@ export default {
 <style scoped>
 .navbar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   background-color: #333;
   padding: 10px 20px;
   color: white;
@@ -164,6 +167,15 @@ export default {
   top: 0;
   left: 0;
   z-index: 1000;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 60px; /* Adjust as needed */
 }
 
 .menu {
@@ -182,14 +194,16 @@ export default {
   text-decoration: underline;
 }
 
-.notification-container, .favorite-container {
+.notification-container,
+.favorite-container {
   position: relative;
   margin-right: 20px;
   cursor: pointer;
   color: white;
 }
 
-.notification-dropdown, .favorite-dropdown {
+.notification-dropdown,
+.favorite-dropdown {
   position: absolute;
   right: 0;
   top: 100%;
@@ -199,7 +213,8 @@ export default {
   z-index: 1;
 }
 
-.notification-item, .favorite-item {
+.notification-item,
+.favorite-item {
   padding: 10px;
   border-bottom: 1px solid #ddd;
   display: flex;
@@ -207,13 +222,15 @@ export default {
   align-items: center;
 }
 
-.notification-item p, .favorite-item p {
+.notification-item p,
+.favorite-item p {
   margin: 0;
   color: black;
   cursor: pointer;
 }
 
-.no-notifications, .no-favorites {
+.no-notifications,
+.no-favorites {
   color: grey;
   font-style: italic;
 }
