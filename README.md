@@ -166,7 +166,11 @@ The database schema is designed to support complex relationships:
 - **Tags** categorize stories for efficient discovery.
 
 ### Database Diagram 
-![Database Diagram](diagrams/database_diagram.png)
+![Database Diagram](diagrams/database_diagram.jpeg)
+
+### Use Case Diagram
+![Use Case Diagram](diagrams/use_case_diagram.png)
+
 
 ## Conclusion
 The Sports News Application stands as a testament to modern software design principles, offering a rich, user-centered experience backed by a robust, scalable technology stack. It promises to be a vibrant platform for sports enthusiasts and journalists alike, bringing the latest sports narratives to a global audience with precision and flair.
